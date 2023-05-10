@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor // 기본생성자
 @AllArgsConstructor // 모든 필드를 매개변수로 하는 생성자
 
+// DB 테이블 역할을 하는 클래스
 public class BoardDTO {
     private Long id;
     private String boardWriter;

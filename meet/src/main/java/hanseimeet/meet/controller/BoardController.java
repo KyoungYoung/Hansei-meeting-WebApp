@@ -6,6 +6,7 @@ import hanseimeet.meet.dto.CommentDTO;
 import hanseimeet.meet.service.BoardService;
 import hanseimeet.meet.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -38,7 +39,7 @@ public class BoardController {
     }
 
     @GetMapping("/")
-    public String findAll(Model model) {
+    public String findAll(@NotNull Model model) {
         // DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
         List<BoardDTO> boardDTOList = boardService.findAll();
         model.addAttribute("boardList", boardDTOList);
@@ -63,14 +64,14 @@ public class BoardController {
     }
 
     @GetMapping("/update/{id}")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, @NotNull Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("boardUpdate", boardDTO);
         return "update";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
+    public String update(@ModelAttribute BoardDTO boardDTO, @NotNull Model model) {
         BoardDTO board = boardService.update(boardDTO);
         model.addAttribute("board", board);
         return "detail";
@@ -85,7 +86,7 @@ public class BoardController {
 
     // /board/paging?page=1
     @GetMapping("/paging")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+    public String paging(@PageableDefault(page = 1) Pageable pageable, @NotNull Model model) {
 //        pageable.getPageNumber();
         Page<BoardDTO> boardList = boardService.paging(pageable);
         int blockLimit = 3;

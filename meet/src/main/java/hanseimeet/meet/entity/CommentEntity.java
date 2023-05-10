@@ -3,6 +3,7 @@ package hanseimeet.meet.entity;
 import hanseimeet.meet.dto.CommentDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -27,7 +28,7 @@ public class CommentEntity extends BaseEntity {
     private BoardEntity boardEntity;
 
 
-    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity) {
+    public static CommentEntity toSaveEntity(@NotNull CommentDTO commentDTO, BoardEntity boardEntity) {
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setCommentWriter(commentDTO.getCommentWriter());
         commentEntity.setCommentContents(commentDTO.getCommentContents());

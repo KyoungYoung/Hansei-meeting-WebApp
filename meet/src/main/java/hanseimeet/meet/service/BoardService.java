@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +25,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class
-BoardService {
+public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
     public void save(BoardDTO boardDTO) throws IOException {
@@ -123,6 +121,15 @@ BoardService {
         return boardDTOS;
     }
 }
+
+
+
+
+
+
+
+
+
 
 
 
