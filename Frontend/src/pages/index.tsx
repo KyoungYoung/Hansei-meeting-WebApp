@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Test from './component/Page'
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
         <div>
           hello~~~~~ world!!!!!!!!!!
         </div>
+        <Test></Test>
       </main>
     </>
   )
