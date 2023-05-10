@@ -11,7 +11,7 @@ export default function Home() {
       </Head>
       <main>
         <div>
-        <Login/>
+          <Login/>
         </div>
       </main>
     </>

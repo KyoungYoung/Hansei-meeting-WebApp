@@ -1,4 +1,4 @@
-import { privateEncrypt } from "crypto";
+import Link from 'next/link';
 import { ReactElement, useState } from "react";
 import styled from "styled-components";
 
@@ -36,8 +36,8 @@ const Field = styled.input`
   border-radius: 4px;
 `;
 
-const SubmitButton = styled.button`
-  background-color: #4285f4;
+const LoginButton = styled.button`
+  background-color: #000000;
   color: #fff;
   padding: 12px;
   border: none;
@@ -49,6 +49,21 @@ const SubmitButton = styled.button`
     background-color: #1a73e8;
   }
 `;
+
+const PageLinkText = styled.a`
+  color: #808080;
+  font-size:0.8rem;
+  padding:12px;
+  text-decoration:none;
+`;
+
+const LoginButtonWrap=styled.div`
+  display:flex;
+  justify-content:space-around;
+  border:1px;
+
+`
+
 type handleChange = (event:React.ChangeEvent<HTMLInputElement>)=>void
 interface LoginProps {
   onSubmit: (username: string, password: string) => void;
@@ -66,14 +81,13 @@ function Login() {
     const onSubmit =(data:any)=>{
         
     }
-}
   return (
     <Container>
         <Title>다과회</Title>
       <Card>
         <form action="api/testlogin" method="post">
           <Field
-            name="userid"
+            name="username"
             placeholder="아이디"
             type="text"
             value={userid}
@@ -88,7 +102,14 @@ function Login() {
             onChange={handlePassword}
             required
           />
-          <SubmitButton type="submit">로그인</SubmitButton>
+          
+          <LoginButtonWrap>
+            <LoginButton type="submit">로그인</LoginButton>
+            {/* 나중에 경로 채우기 */}
+            <Link href='/user/v1/findingid' passHref legacyBehavior><PageLinkText>아이디 찾기</PageLinkText></Link>
+            <Link href='/user/v1/findingpw' passHref legacyBehavior><PageLinkText>비밀번호 찾기</PageLinkText></Link>
+            <Link href='/user/signup' passHref legacyBehavior><PageLinkText>회원가입</PageLinkText></Link>
+          </LoginButtonWrap>
         </form>
       </Card>
     </Container>
