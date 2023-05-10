@@ -1,9 +1,0 @@
-__pycache__
-db.sqlite3
-/static
-/media
-myvenv
-.venv
-.idea
-.vscode
-.env*
