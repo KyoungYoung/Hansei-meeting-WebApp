@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import Test from './component/Page'
+import Test from './components/Page'
+import Mainpage from '@/components/main/Mainpage'
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
         <div>
           hello~~~~~ world!!!!!!!!!!
         </div>
-        <Test></Test>
+        <Mainpage/>
       </main>
     </>
   )

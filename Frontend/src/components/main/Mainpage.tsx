@@ -221,7 +221,7 @@ const RequestButton = styled.button`
   cursor: pointer;
 `;
 
-const Main: React.FC = () => {
+const Mainpage: React.FC = () => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
 
@@ -335,7 +335,7 @@ const Main: React.FC = () => {
         <CategoryTitle3> 활동순 </CategoryTitle3>
         <InnerBox4>변혜림</InnerBox4>
         <InnerBox4>박동주</InnerBox4>
-        <InnerBox4>지훈</InnerBox4>
+        <InnerBox4>정지훈</InnerBox4>
         </CategoryBox4>
         </TwoBox>
       </BottomWrapper>
@@ -343,4 +343,4 @@ const Main: React.FC = () => {
   );
 };
 
-export default Main;
+export default Mainpage;
