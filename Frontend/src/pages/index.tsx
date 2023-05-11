@@ -1,4 +1,4 @@
-import Test from "./component/test";
+import Test from "./components/test";
 import styled from 'styled-components';
 
 
