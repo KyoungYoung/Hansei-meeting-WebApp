@@ -1,5 +1,7 @@
 import React, { useState }  from 'react';
 import styled from "styled-components";
+import Link from 'next/link';
+import Image from 'next/image';
 
 interface SubMenuProps {
   isOpen: boolean;
@@ -33,9 +35,7 @@ const TopBox = styled.div`
   background-color: #DAEEFD;
 `;
 
-const Logo = styled.img`
-  width: 3.125rem;
-  height: 3.125rem;
+const Logo = styled(Image)`
   margin-right: 1rem;
 `;
 
@@ -79,10 +79,16 @@ const SubMenuList = styled.ul`
   margin: 0;
 `;
 
-const SubMenuItem = styled.li`
+const SubMenuItem = styled(Link)`
   font-size: 0.85rem;
   padding: 0.25rem 0;
 `;
+
+interface SubData { //타입지정
+  title: string;
+  content: string;
+  url: string;
+}
 
 const BottomWrapper = styled.div`
   display: flex;
@@ -102,7 +108,6 @@ const CategoryBox = styled.div`
   margin-top: 70px;
   padding-left: 50px;
   padding-right: 50px;
-  height: 500px;
   `;
  
 const CategoryBox2 = styled.div`
@@ -165,8 +170,9 @@ const CategoryTitle3 = styled.div`
     font-weight: bolder;
   `;
 
-const InnerBox = styled.div`
-font-size: smaller;
+const InnerBox = styled(Link)`
+  text-decoration-line:none;
+  font-size: smaller;
   width: 250px;
   height: 30px;
   background-color: #FFFFF2;
@@ -196,15 +202,16 @@ font-size: smaller;
   margin-bottom: 0.5rem; 
 `;
 
-const InnerBox4 = styled.div`
-font-size: smaller;
-  width: 200px;
+const InnerBox4 = styled(Link)<{width?:number}>`
+  text-decoration-line:none;
+  color: inherit;
+  font-size: smaller;
   height: 2rem;
   background-color: #FFFFF2;
   margin-top: 1rem;
   margin-bottom: 0.5rem; 
   padding: 3px;
-
+  width:${(props) => props.width? props.width+'px' : '200px'};
 `;
 
 const CategoryTitle = styled.h2`
@@ -221,6 +228,65 @@ const RequestButton = styled.button`
   cursor: pointer;
 `;
 
+const frontdata = [
+  {
+    title: '제목1',
+    content: '내용1',
+    url: '/제목1'
+  },
+  {
+    title: '제목2',
+    content: '내용2',
+    url: '/제목2'
+  },
+  {
+    title: '제목3',
+    content: '내용3',
+    url: '/제목3'
+  },
+  {
+    title: '제목4',
+    content: '내용4',
+    url: '/제목4'
+  },
+  {
+    title: '제목5',
+    content: '내용5',
+    url: '/제목5'
+  },
+  {
+    title: '제목6',
+    content: '내용6',
+    url: '/제목6'
+  },
+  {
+    title: '제목7',
+    content: '내용7',
+    url: '/제목7'
+  },
+  {
+    title: '제목8',
+    content: '내용8',
+    url: '/제목8'
+  },
+  {
+    title: '제목9',
+    content: '내용9',
+    url: '/제목9'
+  },
+  {
+    title: '제목10',
+    content: '내용10',
+    url: '/제목10'
+  },
+]
+
+interface DummyData { //타입지정
+  title: string;
+  content: string;
+  url: string;
+}
+
 const Mainpage: React.FC = () => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -228,13 +294,13 @@ const Mainpage: React.FC = () => {
   return (
     <MainContainer>
       <TopBox>
-      <Logo src="Frontend\src\pages\main\meow.png" />
+      <Logo width={90} height={90} alt='' src="/logo.png" />
         <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
           신학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>신학과</SubMenuItem>
-            <SubMenuItem>기독교교육·상담학과</SubMenuItem>
+            <SubMenuItem href={'/'}>신학과</SubMenuItem>
+            <SubMenuItem href={'/'}>기독교교육·상담학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -242,12 +308,12 @@ const Mainpage: React.FC = () => {
           인문사회과학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>미디어영상광고학과</SubMenuItem>
-            <SubMenuItem>경영학과</SubMenuItem>
-            <SubMenuItem>경찰행정학과</SubMenuItem>
-            <SubMenuItem>국제관광학과</SubMenuItem>
-            <SubMenuItem>영어학과</SubMenuItem>
-            <SubMenuItem>중국어학과</SubMenuItem>
+            <SubMenuItem href={'/'}>미디어영상광고학과</SubMenuItem>
+            <SubMenuItem href={'/'}>경영학과</SubMenuItem>
+            <SubMenuItem href={'/'}>경찰행정학과</SubMenuItem>
+            <SubMenuItem href={'/'}>국제관광학과</SubMenuItem>
+            <SubMenuItem href={'/'}>영어학과</SubMenuItem>
+            <SubMenuItem href={'/'}>중국어학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -255,9 +321,9 @@ const Mainpage: React.FC = () => {
           IT학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>컴퓨터공학과</SubMenuItem>
-            <SubMenuItem>ICT융합학과</SubMenuItem>
-            <SubMenuItem>산업보안학과</SubMenuItem>
+            <SubMenuItem href={'/'}>컴퓨터공학과</SubMenuItem>
+            <SubMenuItem href={'/'}>ICT융합학과</SubMenuItem>
+            <SubMenuItem href={'/'}>산업보안학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -265,8 +331,8 @@ const Mainpage: React.FC = () => {
           간호복지학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>간호학과</SubMenuItem>
-            <SubMenuItem>사회복지학과</SubMenuItem>
+            <SubMenuItem href={'/'}>간호학과</SubMenuItem>
+            <SubMenuItem href={'/'}>사회복지학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -274,8 +340,8 @@ const Mainpage: React.FC = () => {
           예술학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>음악학과</SubMenuItem>
-            <SubMenuItem>공연예술학과</SubMenuItem>
+            <SubMenuItem href={'/'}>음악학과</SubMenuItem>
+            <SubMenuItem href={'/'}>공연예술학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -283,9 +349,9 @@ const Mainpage: React.FC = () => {
           디자인학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>시각정보디자인학과</SubMenuItem>
-            <SubMenuItem>실내건축디자인학과</SubMenuItem>
-            <SubMenuItem>섬유패션디자인학과</SubMenuItem>
+            <SubMenuItem href={'/'}>시각정보디자인학과</SubMenuItem>
+            <SubMenuItem href={'/'}>실내건축디자인학과</SubMenuItem>
+            <SubMenuItem href={'/'}>섬유패션디자인학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -293,9 +359,9 @@ const Mainpage: React.FC = () => {
           계약학과
           <SubMenu className="submenu" isOpen={subMenuOpen}>
             <SubMenuList>
-            <SubMenuItem>보건복지 사회적기업학과</SubMenuItem>
-            <SubMenuItem>보건융합 사회적경제학과</SubMenuItem>
-            <SubMenuItem>스마트콘텐츠마케팅학과</SubMenuItem>
+            <SubMenuItem href={'/'}>보건복지 사회적기업학과</SubMenuItem>
+            <SubMenuItem href={'/'}>보건융합 사회적경제학과</SubMenuItem>
+            <SubMenuItem href={'/'}>스마트콘텐츠마케팅학과</SubMenuItem>
             </SubMenuList>
           </SubMenu>
           </ButtonWrapper>
@@ -305,14 +371,7 @@ const Mainpage: React.FC = () => {
       <BottomWrapper>
         <CategoryBox>
         <CategoryTitle> 자유게시판 </CategoryTitle>
-        <InnerBox>내일 저녁에 농구하실 분</InnerBox>
-        <InnerBox>집으로 순간이동 하고 싶다</InnerBox>
-        <InnerBox>투자론 과제 어떻게 하는지 아는 사람ㅠ</InnerBox>
-        <InnerBox>오늘 저메추 해쥬라</InnerBox>
-        <InnerBox>종강하고 싶은 사람 좋아요 박고 가</InnerBox>
-        <InnerBox>다들 mbti 머야?</InnerBox>
-        <InnerBox>낼 과팅하는데 옷 어캐 입어야 할깡</InnerBox>
-        <InnerBox>과팅 해본 사람 후기 좀~.~</InnerBox>
+        {frontdata.map((data)=> <InnerBox href={data.url}>{data.title}</InnerBox>)}
         <RequestButton>더보기</RequestButton>
         </CategoryBox>
 
@@ -333,9 +392,9 @@ const Mainpage: React.FC = () => {
 
         <CategoryBox4>
         <CategoryTitle3> 활동순 </CategoryTitle3>
-        <InnerBox4>변혜림</InnerBox4>
-        <InnerBox4>박동주</InnerBox4>
-        <InnerBox4>정지훈</InnerBox4>
+        <InnerBox4 width={200} href={'/a'}>변혜림</InnerBox4>
+        <InnerBox4 width={200} href={'/a'}>박동주</InnerBox4>
+        <InnerBox4 width={200} href={'/a'}>정지훈</InnerBox4>
         </CategoryBox4>
         </TwoBox>
       </BottomWrapper>
