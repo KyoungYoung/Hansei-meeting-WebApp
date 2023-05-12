@@ -2,6 +2,8 @@ import React, { useState }  from 'react';
 import styled from "styled-components";
 import Link from 'next/link';
 import Image from 'next/image';
+import Sublist1 from './Sublist1';
+import Sublist2 from './Sublist2';
 
 interface SubMenuProps {
   isOpen: boolean;
@@ -294,29 +296,9 @@ const Mainpage: React.FC = () => {
   return (
     <MainContainer>
       <TopBox>
-      <Logo width={90} height={90} alt='' src="/logo.png" />
-        <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          신학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>신학과</SubMenuItem>
-            <SubMenuItem href={'/'}>기독교교육·상담학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
-          <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          인문사회과학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>미디어영상광고학과</SubMenuItem>
-            <SubMenuItem href={'/'}>경영학과</SubMenuItem>
-            <SubMenuItem href={'/'}>경찰행정학과</SubMenuItem>
-            <SubMenuItem href={'/'}>국제관광학과</SubMenuItem>
-            <SubMenuItem href={'/'}>영어학과</SubMenuItem>
-            <SubMenuItem href={'/'}>중국어학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
+      <Logo width={150} height={150} alt='' src="/logo2.png" />
+       <Sublist1></Sublist1>
+       <Sublist2></Sublist2>
           <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
           IT학부
           <SubMenu className="submenu" isOpen={subMenuOpen}>
