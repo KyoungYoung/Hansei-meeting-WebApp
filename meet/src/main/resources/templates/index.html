@@ -1,27 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>index</title>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="/templates/logo192.png"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Web site created using create-react-app"/>
+    <link rel="apple-touch-icon" href="/templates/logo192.png"/>
+    <link rel="manifest" href="/templates/manifest.json"/>
+    <title>도서관리 애플리케이션</title>
+    <script defer="defer" src="/js/main.d4f24480.js"></script>
+    <link href="/css/main.101cd0fe.css" rel="stylesheet">
 </head>
 <body>
-<button onclick="saveReq()">글작성</button>
-<a href="/board/save">글작성(링크)</a>
-<button onclick="listReq()">글목록</button>
-<button onclick="pagingReq()">페이징목록</button>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
 </body>
-<script>
-
-    const saveReq = () => {
-        location.href = "/board/save";
-    }
-    const listReq = () => {
-        location.href = "/board/";
-    }
-    const pagingReq = () => {
-        location.href = "/board/paging";
-    }
-
-
-</script>
 </html>

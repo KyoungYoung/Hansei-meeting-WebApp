@@ -2,6 +2,7 @@
 1. JDK 11
 2. mysql
 3. jpa
+4. SpringBoot 2.7.11
 
 
 # 게시판 주요기능
