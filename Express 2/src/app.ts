@@ -4,6 +4,7 @@ const app = express();
 const methodOverride = require('method-override');
 const MongoClient = require('mongodb').MongoClient;
 const flash = require('connect-flash');
+require('dotenv').config();
 // 미들웨어
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static('public'));
@@ -15,7 +16,7 @@ app.set('view engine', 'ejs');
 
 let db: any;
 MongoClient.connect(
-    'mongodb+srv://kky:1214@cluster0.5tqish3.mongodb.net/?retryWrites=true&w=majority',
+    process.env.DB_URL,
     { useUnifiedTopology: true },
     (err: Error, client: any) => {
         // 에러날 시
@@ -23,16 +24,9 @@ MongoClient.connect(
 
         // hansei db에 연결하기
         db = client.db('hansei');
-        // post 컬렉션에 데이터 하나 저장하기
-        // db.collection('post').insertOne(
-        //     { name: 'kky', age: 26 },
-        //     (err: Error, result: any) => {
-        //         console.log('저장완료!!!');
-        //     }
-        // );
 
         // 서버 실행
-        app.listen('8000', () => {
+        app.listen(process.env.PORT, () => {
             console.log(`🛡️  Server listening on port: 8000🛡️`);
         });
     }
