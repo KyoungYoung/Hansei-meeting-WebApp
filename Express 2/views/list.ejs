@@ -19,7 +19,9 @@
                 <% for (let i = 0; i < posts.length; i++){ %>
                 <li class="list-group-item">
                     <p>글 번호 : <%= posts[i]._id %></p>
-                    <h4>제목: <%= posts[i].제목 %></h4>
+                    <a href="/detail/<%= posts[i]._id%>">
+                        <h4>제목: <%= posts[i].제목 %></h4>
+                    </a>
                     <p>마감 날짜: <%= posts[i].날짜 %></p>
                     <button
                         class="btn btn-outline-secondary delete"
@@ -43,7 +45,8 @@
         <script>
             $('.delete').click((e) => {
                 let postNum = e.target.dataset.id;
-                let nowPush = $(this);
+                //let nowPush = $(this);
+                let listItem = $(e.target).closest('li');
                 $.ajax({
                     method: 'DELETE',
                     url: '/delete',
@@ -51,7 +54,11 @@
                 })
                     .done((result) => {
                         //AJAX 성공시 실행할 코드는 여기
-                        $(this).parent('li').fadeOut();
+                        listItem.fadeOut(() => {
+                            // 리스트 아이템이 사라진 후 페이지를 새로고침
+                            location.reload();
+                        });
+                        //$(this).parent('li').fadeOut();
                     })
                     .fail((xhr, code, err) => {
                         //AJAX 실패시 실행할 코드적기

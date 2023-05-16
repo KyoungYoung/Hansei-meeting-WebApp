@@ -3,11 +3,14 @@ import express, { Request, Response, NextFunction } from 'express';
 const app = express();
 const methodOverride = require('method-override');
 const MongoClient = require('mongodb').MongoClient;
+const flash = require('connect-flash');
 // 미들웨어
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static('public'));
 app.use(methodOverride('_method'));
 
+// 로그인 실패 시 알림창을 표시하기 위해
+app.use(flash());
 app.set('view engine', 'ejs');
 
 let db: any;
@@ -77,7 +80,7 @@ app.post('/write-page', (req: Request, res: Response, next: NextFunction) => {
                             if (err) {
                                 return console.log(err);
                             }
-                            res.send('전송완료');
+                            res.redirect('/list');
                         }
                     );
                 }
@@ -94,7 +97,6 @@ app.delete('/delete', (req: Request, res: Response) => {
         console.log('삭제완료');
         res.status(200).send({ message: '성공했습니다' });
     });
-    res.send('삭제!');
 });
 
 // /detail
@@ -150,13 +152,20 @@ app.post(
     '/login',
     passport.authenticate('local', {
         failureRedirect: '/fail',
+        failureFlash: true,
     }),
     (req: Request, res: Response, next: NextFunction) => {
         res.redirect('/mypage');
     }
 );
-app.get('/fail', (req: Request, res: Response, next: NextFunction) => {
-    // res.render('fail.ejs');
+app.get('/fail', (req: Request | any, res: Response, next: NextFunction) => {
+    const errorMessage = req.flash('error')[0];
+    res.send(`
+        <script>
+            alert("${errorMessage}");
+            window.location.href = "/login";
+        </script>
+    `);
 });
 
 // 아이디 비번 인증하는 세부 코드
