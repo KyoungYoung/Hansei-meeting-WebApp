@@ -2,8 +2,8 @@ import React, { useState }  from 'react';
 import styled from "styled-components";
 import Link from 'next/link';
 import Image from 'next/image';
-import Sublist1 from './Sublist1';
-import Sublist2 from './Sublist2';
+import Sublist from './Sublist';
+
 
 interface SubMenuProps {
   isOpen: boolean;
@@ -81,16 +81,10 @@ const SubMenuList = styled.ul`
   margin: 0;
 `;
 
-const SubMenuItem = styled(Link)`
+const SubMenuItem = styled.li`
   font-size: 0.85rem;
   padding: 0.25rem 0;
 `;
-
-interface SubData { //타입지정
-  title: string;
-  content: string;
-  url: string;
-}
 
 const BottomWrapper = styled.div`
   display: flex;
@@ -297,56 +291,41 @@ const Mainpage: React.FC = () => {
     <MainContainer>
       <TopBox>
       <Logo width={150} height={150} alt='' src="/logo2.png" />
-       <Sublist1></Sublist1>
-       <Sublist2></Sublist2>
-          <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          IT학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>컴퓨터공학과</SubMenuItem>
-            <SubMenuItem href={'/'}>ICT융합학과</SubMenuItem>
-            <SubMenuItem href={'/'}>산업보안학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
-          <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          간호복지학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>간호학과</SubMenuItem>
-            <SubMenuItem href={'/'}>사회복지학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
-          <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          예술학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>음악학과</SubMenuItem>
-            <SubMenuItem href={'/'}>공연예술학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
-          <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          디자인학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>시각정보디자인학과</SubMenuItem>
-            <SubMenuItem href={'/'}>실내건축디자인학과</SubMenuItem>
-            <SubMenuItem href={'/'}>섬유패션디자인학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
-          <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          계약학과
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem href={'/'}>보건복지 사회적기업학과</SubMenuItem>
-            <SubMenuItem href={'/'}>보건융합 사회적경제학과</SubMenuItem>
-            <SubMenuItem href={'/'}>스마트콘텐츠마케팅학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
+       <Sublist menuName={'신학부'}>
+        <SubMenuItem>신학과</SubMenuItem>
+        <SubMenuItem>기독교상담교육학과</SubMenuItem>
+        </Sublist>
+        <Sublist menuName={"인문사회과학부"}>
+          <SubMenuItem>미디어영상광고학과</SubMenuItem>
+          <SubMenuItem>경영학과</SubMenuItem>
+          <SubMenuItem>경찰행정학과</SubMenuItem>
+          <SubMenuItem>국제관광학과</SubMenuItem>
+          <SubMenuItem>영어학과</SubMenuItem>
+          <SubMenuItem>중국어학과</SubMenuItem>
+        </Sublist>
+        <Sublist menuName={"IT학부"}>
+          <SubMenuItem>컴퓨터공학과</SubMenuItem>
+          <SubMenuItem>ICT융합학과</SubMenuItem>
+          <SubMenuItem>산업보안학과</SubMenuItem>
+        </Sublist>
+        <Sublist menuName={'간호복지학부'}>
+            <SubMenuItem>간호학과</SubMenuItem>
+            <SubMenuItem>사회복지학과</SubMenuItem>
+            </Sublist>
+            <Sublist menuName={'예술학부'}>
+            <SubMenuItem>음악학과</SubMenuItem>
+            <SubMenuItem>공연예술학과</SubMenuItem>
+            </Sublist>
+            <Sublist menuName={'디자인학부'}>
+            <SubMenuItem>시각정보디자인학과</SubMenuItem>
+            <SubMenuItem>실내건축디자인학과</SubMenuItem>
+            <SubMenuItem>섬유패션디자인학과</SubMenuItem>
+            </Sublist>
+            <Sublist menuName={'계약학과'}>
+            <SubMenuItem>보건복지 사회적기업학과</SubMenuItem>
+            <SubMenuItem>보건융합 사회적경제학과</SubMenuItem>
+            <SubMenuItem>스마트콘텐츠마케팅학과</SubMenuItem>
+            </Sublist>
         <ButtonWrapper>요청하기</ButtonWrapper>
         </TopBox>
 

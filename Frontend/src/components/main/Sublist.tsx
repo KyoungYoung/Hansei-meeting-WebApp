@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { ReactNode, useState }  from 'react';
 import styled from "styled-components";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -52,22 +52,23 @@ const SubMenuItem = styled.li`
   padding: 0.25rem 0;
 `;
 
-function Sublist2() {
-    const [subMenuOpen, setSubMenuOpen] = useState(false);
-    return ( <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
-          인문사회과학부
-          <SubMenu className="submenu" isOpen={subMenuOpen}>
-            <SubMenuList>
-            <SubMenuItem>미디어영상광고학과</SubMenuItem>
-            <SubMenuItem>경영학과</SubMenuItem>
-            <SubMenuItem>경찰행정학과</SubMenuItem>
-            <SubMenuItem>국제관광학과</SubMenuItem>
-            <SubMenuItem>영어학과</SubMenuItem>
-            <SubMenuItem>중국어학과</SubMenuItem>
-            </SubMenuList>
-          </SubMenu>
-          </ButtonWrapper>
- );
+interface Props{
+  menuName:String
+  children:ReactNode
 }
 
-export default Sublist2;
+function Sublist({menuName, children}:Props) {
+  const [subMenuOpen, setSubMenuOpen] = useState(false);
+  return ( 
+  <ButtonWrapper onMouseEnter={() => setSubMenuOpen(true)} onMouseLeave={() => setSubMenuOpen(false)}>
+  {menuName}
+  <SubMenu className="submenu" isOpen={subMenuOpen}>
+    <SubMenuList>
+      {children}
+    </SubMenuList>
+  </SubMenu>
+  </ButtonWrapper>
+);
+}
+
+export default Sublist;
