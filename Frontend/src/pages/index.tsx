@@ -1,3 +1,4 @@
+import Login from '@/components/Login'
 import Head from 'next/head'
 import Test from './components/Page'
 import Mainpage from '@/components/main/Mainpage'
@@ -12,7 +13,7 @@ export default function Home() {
       </Head>
       <main>
         <div>
-          hello~~~~~ world!!!!!!!!!!
+          <Login/>
         </div>
         <Mainpage/>
       </main>
