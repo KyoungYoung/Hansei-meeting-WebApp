@@ -65,6 +65,7 @@ app.post('/write-page', (req: Request, res: Response, next: NextFunction) => {
                     _id: total + 1,
                     제목: req.body.title,
                     날짜: req.body.date,
+                    내용: req.body.content,
                 },
                 (err: any, result: any) => {
                     db.collection('count').updateOne(
@@ -116,7 +117,13 @@ app.get('/edit/:id', (req: Request, res: Response, next: NextFunction) => {
 app.put('/edit', (req: Request, res: Response, next: NextFunction) => {
     db.collection('post').updateOne(
         { _id: parseInt(req.body.id) },
-        { $set: { 제목: req.body.title, 날짜: req.body.date } },
+        {
+            $set: {
+                제목: req.body.title,
+                날짜: req.body.date,
+                내용: req.body.content,
+            },
+        },
         (err: Error, result: any) => {
             console.log('수정!');
             // /list로 이동
@@ -246,4 +253,47 @@ app.post('/join', (req: Request, res: Response, next: NextFunction) => {
         }
     );
     res.redirect('/login');
+});
+
+// /search - 검색
+app.get('/search', (req: Request, res: Response) => {
+    // 검색어에 숫자가 있어도 일치시키기 위한 정규식
+    const searchValue: any = req.query.value; // 타입을 명시적으로 지정
+    console.log(typeof searchValue);
+    if (!searchValue) {
+        return res.status(400).send('검색어를 입력해주세요.');
+    }
+
+    const regexPattern = new RegExp(searchValue, 'i');
+    console.log(regexPattern);
+
+    let searchPost = [
+        {
+            $search: {
+                index: 'titleSearch',
+                text: {
+                    query: searchValue,
+                    path: '제목', // 제목날짜 둘다 찾고 싶으면 ['제목', '날짜']
+                },
+            },
+        },
+        { $sort: { _id: 1 } },
+        { $limit: 10 },
+    ];
+    // console.log(req.query.value);
+    db.collection('post')
+        .aggregate(searchPost)
+        .toArray((err: Error, result: any) => {
+            if (err) {
+                // 오류 처리
+                console.log(err);
+
+                return res
+                    .status(500)
+                    .send('검색 결과를 가져오는 도중 오류가 발생했습니다.');
+            }
+            console.log('검색 결과:', result);
+            console.log('검색 정규식:', regexPattern);
+            res.render('search.ejs', { posts: result ?? [] });
+        });
 });

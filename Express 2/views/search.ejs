@@ -14,37 +14,23 @@
     <body>
         <%- include('nav.html') %>
 
-        <h4 class="ml-2 my-3 text-center">검색하기</h4>
-        <div class="container input-group mb-2 mt-4">
-            <input class="form-control" id="search-input" />
-            <button
-                type="submit"
-                class="input-group-append btn btn-danger"
-                id="search"
-            >
-                검색
-            </button>
-        </div>
-
-        <h4 class="ml-2 my-3 text-center">리스트</h4>
+        <h4 class="ml-2 my-3 text-center">검색 결과</h4>
         <div class="container mt-4">
             <ul class="list-group">
-                <% for (let i = 0; i < posts.length; i++){ %>
+                <% if (posts === undefined) { %>
+                <p>검색 결과를 가져오는 도중 오류가 발생했습니다.</p>
+                <% } else if (posts.length === 0) { %>
+                <p>검색 결과가 없습니다.</p>
+                <% } else { %> <% for (let i = 0; i < posts.length; i++){ %>
                 <li class="list-group-item">
                     <!-- <p>글 번호 : <%= posts[i]._id %></p> -->
                     <a href="/detail/<%= posts[i]._id%>">
                         <h4>제목: <%= posts[i].제목 %></h4>
                     </a>
                     <p>시각: <%= posts[i].날짜 %></p>
-                    <p>내용: <%=posts[i].내용 %></p>
-                    <button
-                        class="btn btn-outline-secondary delete"
-                        data-id="<%= posts[i]._id %>"
-                    >
-                        삭제
-                    </button>
+                    <p>내용: <%= posts[i].내용 %></p>
                 </li>
-                <%} %>
+                <% } %> <% } %>
             </ul>
         </div>
 
@@ -87,9 +73,9 @@
             });
 
             $('#search-input').keypress(function (event) {
-                // 엔터 키의 keyCode는 13입니다.
+                // 엔터 키의 keyCode는 13
                 if (event.keyCode === 13) {
-                    event.preventDefault(); // 기본 엔터 동작을 방지합니다.
+                    event.preventDefault(); // 기본 엔터 동작을 방지
 
                     let inputValue = $(this).val();
                     window.location.replace('/search?value=' + inputValue);
