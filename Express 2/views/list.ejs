@@ -35,6 +35,9 @@
                     <a href="/detail/<%= posts[i]._id%>">
                         <h4>제목: <%= posts[i].제목 %></h4>
                     </a>
+                    <p>
+                        작성자: <%= getAuthorName(posts[i].작성자, loginData) %>
+                    </p>
                     <p>시각: <%= posts[i].날짜 %></p>
                     <p>내용: <%=posts[i].내용 %></p>
                     <button
@@ -73,11 +76,12 @@
                             // 리스트 아이템이 사라진 후 페이지를 새로고침
                             location.reload();
                         });
-                        //$(this).parent('li').fadeOut();
                     })
                     .fail((xhr, code, err) => {
                         //AJAX 실패시 실행할 코드적기
                         console.log(xhr, code, err);
+                        // 서버로부터 받은 메시지 표시
+                        alert(xhr.responseJSON.message);
                     });
             });
 

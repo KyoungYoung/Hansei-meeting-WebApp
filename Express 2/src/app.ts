@@ -37,61 +37,9 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.render('index.ejs');
 });
 
-// /list
-app.get('/list', (req: Request, res: Response, next: NextFunction) => {
-    // 모든 데이터 보여주기
-    db.collection('post')
-        .find()
-        .toArray((err: Error, result: any) => {
-            console.log(result);
-            // db에서 데이터 찾아서 ejs에 넣어주기
-            res.render('list.ejs', { posts: result });
-        });
-});
-
 // /write 작성 페이지
 app.get('/write', (req: Request, res: Response, next: NextFunction) => {
     res.render('write.ejs');
-});
-
-// /write - form 데이터 /write-page로 POST 요청
-app.post('/write-page', (req: Request, res: Response, next: NextFunction) => {
-    db.collection('count').findOne(
-        { name: '게시물갯수' },
-        (err: Error, result: any) => {
-            let total = result.totalPost;
-            db.collection('post').insertOne(
-                {
-                    _id: total + 1,
-                    제목: req.body.title,
-                    날짜: req.body.date,
-                    내용: req.body.content,
-                },
-                (err: any, result: any) => {
-                    db.collection('count').updateOne(
-                        { name: '게시물갯수' },
-                        { $inc: { totalPost: 1 } },
-                        (err: Error, result: any) => {
-                            if (err) {
-                                return console.log(err);
-                            }
-                            res.redirect('/list');
-                        }
-                    );
-                }
-            );
-        }
-    );
-});
-
-// /delete
-app.delete('/delete', (req: Request, res: Response) => {
-    // db에서 삭제하기
-    req.body._id = parseInt(req.body._id);
-    db.collection('post').deleteOne(req.body, (err: Error, result: any) => {
-        console.log('삭제완료');
-        res.status(200).send({ message: '성공했습니다' });
-    });
 });
 
 // /detail
@@ -296,4 +244,116 @@ app.get('/search', (req: Request, res: Response) => {
             console.log('검색 정규식:', regexPattern);
             res.render('search.ejs', { posts: result ?? [] });
         });
+});
+// /write - form 데이터 /write-page로 POST 요청
+app.post(
+    '/write-page',
+    (req: Request | any, res: Response, next: NextFunction) => {
+        db.collection('count').findOne(
+            { name: '게시물갯수' },
+            (err: Error, result: any) => {
+                let total = result.totalPost;
+                let storage = {
+                    _id: total + 1,
+                    // 현재 로그인한 사람 정보
+                    작성자: req.user._id,
+                    제목: req.body.title,
+                    날짜: req.body.date,
+                    내용: req.body.content,
+                };
+                db.collection('post').insertOne(
+                    storage,
+                    (err: any, result: any) => {
+                        db.collection('count').updateOne(
+                            { name: '게시물갯수' },
+                            { $inc: { totalPost: 1 } },
+                            (err: Error, result: any) => {
+                                if (err) {
+                                    return console.log(err);
+                                }
+                                res.redirect('/list');
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    }
+);
+
+// /list GET 요청 처리
+app.get('/list', (req: Request, res: Response, next: NextFunction) => {
+    // 작성자 정보 가져오기
+    db.collection('login')
+        .find()
+        .toArray((err: Error, loginResult: any) => {
+            if (err) {
+                // 오류 처리
+                return next(err);
+            }
+
+            // 게시물 가져오기
+            db.collection('post')
+                .find()
+                .toArray((err: Error, postResult: any) => {
+                    if (err) {
+                        // 오류 처리
+                        return next(err);
+                    }
+
+                    // 게시물 작성자 정보를 포함하여 렌더링
+                    res.render('list.ejs', {
+                        loginData: loginResult,
+                        posts: postResult,
+                        getAuthorName: getAuthorName,
+                    });
+                });
+        });
+});
+
+// getAuthorName 함수 정의
+function getAuthorName(authorId: any, loginData: any) {
+    // 작성자 id를 사용하여 작성자 이름을 가져오는 로직 구현
+    const author =
+        loginData && loginData.find((login: any) => login.id === authorId);
+    return author ? author.name : '';
+}
+
+// /delete
+app.delete('/delete', (req: Request | any, res: Response) => {
+    // db에서 삭제하기
+    console.log(req.body);
+
+    req.body._id = parseInt(req.body._id);
+    // 실제 로그인 유저 id와 글에 저장된 id 일치하는지 확인
+    let deleteData = { _id: req.body._id, 작성자: req.user._id };
+
+    db.collection('post').findOne(deleteData, (err: Error, post: any) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send({ message: '오류가 발생했습니다.' });
+            return;
+        }
+
+        if (!post) {
+            // 작성자와 일치하는 글이 없는 경우
+            res.status(403).send({ message: '내가 쓴 글이 아닙니다.' });
+            return;
+        }
+
+        // 일치하는 글이 있는 경우 삭제 수행
+        db.collection('post').deleteOne(
+            deleteData,
+            (err: Error, result: any) => {
+                console.log('삭제완료');
+                if (err) {
+                    console.log(err);
+                    res.status(500).send({ message: '오류가 발생했습니다.' });
+                    return;
+                }
+
+                res.status(200).send({ message: '성공했습니다.' });
+            }
+        );
+    });
 });
