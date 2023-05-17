@@ -103,7 +103,12 @@ app.post(
         failureRedirect: '/fail',
         failureFlash: true,
     }),
-    (req: Request, res: Response, next: NextFunction) => {
+    (req: Request | any, res: Response, next: NextFunction) => {
+        req.login(req.user, (err: Error) => {
+            if (err) {
+                return next(err);
+            }
+        });
         res.redirect('/mypage');
     }
 );
@@ -143,8 +148,10 @@ passport.use(
                             message: '존재하지않는 아이디',
                         });
                     // db에 아이디가 있다면 db 비번과 입력 비번 비교
-                    if (inputPW == result.pw) {
-                        return done(null, result);
+                    if (inputPW === result.pw) {
+                        return done(null, result, {
+                            message: '로그인 성공 메시지',
+                        });
                     } else {
                         return done(null, false, { message: '비번틀렸어요' });
                     }
@@ -245,6 +252,7 @@ app.get('/search', (req: Request, res: Response) => {
             res.render('search.ejs', { posts: result ?? [] });
         });
 });
+
 // /write - form 데이터 /write-page로 POST 요청
 app.post(
     '/write-page',
@@ -255,15 +263,15 @@ app.post(
                 let total = result.totalPost;
                 let storage = {
                     _id: total + 1,
-                    // 현재 로그인한 사람 정보
-                    작성자: req.user._id,
+
+                    작성자: req.user.id, // 현재 로그인한 사용자의 아이디를 작성자로 저장
                     제목: req.body.title,
                     날짜: req.body.date,
                     내용: req.body.content,
                 };
                 db.collection('post').insertOne(
                     storage,
-                    (err: any, result: any) => {
+                    (err: Error, result: any) => {
                         db.collection('count').updateOne(
                             { name: '게시물갯수' },
                             { $inc: { totalPost: 1 } },
@@ -305,18 +313,26 @@ app.get('/list', (req: Request, res: Response, next: NextFunction) => {
                     res.render('list.ejs', {
                         loginData: loginResult,
                         posts: postResult,
-                        getAuthorName: getAuthorName,
+                        getAuthorName: (authorId: any) =>
+                            getAuthorName(authorId, loginResult, req),
                     });
                 });
         });
 });
 
-// getAuthorName 함수 정의
-function getAuthorName(authorId: any, loginData: any) {
-    // 작성자 id를 사용하여 작성자 이름을 가져오는 로직 구현
-    const author =
-        loginData && loginData.find((login: any) => login.id === authorId);
-    return author ? author.name : '';
+function getAuthorName(authorId: any, loginData: any, req: Request | any) {
+    // 현재 로그인한 사용자의 ID 가져오기
+    const loggedInUserId = req.user?.id;
+
+    // 작성자 ID와 로그인한 사용자의 ID 비교
+    if (authorId === loggedInUserId) {
+        return '나 (작성자)';
+    } else {
+        // 작성자 id를 사용하여 작성자 이름을 가져오는 로직 구현
+        const author =
+            loginData && loginData.find((login: any) => login._id === authorId);
+        return author ? author.name : '';
+    }
 }
 
 // /delete

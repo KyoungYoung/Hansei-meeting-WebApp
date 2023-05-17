@@ -31,13 +31,13 @@
             <ul class="list-group">
                 <% for (let i = 0; i < posts.length; i++){ %>
                 <li class="list-group-item">
-                    <!-- <p>글 번호 : <%= posts[i]._id %></p> -->
                     <a href="/detail/<%= posts[i]._id%>">
                         <h4>제목: <%= posts[i].제목 %></h4>
                     </a>
-                    <p>
+                    <!-- <p>
                         작성자: <%= getAuthorName(posts[i].작성자, loginData) %>
-                    </p>
+                    </p> -->
+                    <p>작성자: <%= posts[i].작성자 %></p>
                     <p>시각: <%= posts[i].날짜 %></p>
                     <p>내용: <%=posts[i].내용 %></p>
                     <button
@@ -47,7 +47,7 @@
                         삭제
                     </button>
                 </li>
-                <%} %>
+                <% } %>
             </ul>
         </div>
 
