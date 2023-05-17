@@ -1,5 +1,6 @@
-import Test from "./components/test";
 import styled from 'styled-components';
+import Board from "../components/Board";
+import Header from "../components/Header";
 
 
 
@@ -7,7 +8,10 @@ import styled from 'styled-components';
 function Main () {
   return (  
     <div>
-      <Test/>
+      <Header/>
+      <div>
+      <Board/>
+      </div>      
     </div>
    
     

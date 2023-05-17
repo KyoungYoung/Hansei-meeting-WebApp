@@ -5,13 +5,14 @@ const InnerBox = styled.div`
   display: flex;
 `;
 
-const Board = styled.div`
+const Div = styled.div`
   margin: 0 auto;
 `;
 
 const Title = styled.h1` 
 margin: 5px 0;
   font-size:2.5rem;
+  margin-top: 90px;
   display:flex;
 `;
 
@@ -33,9 +34,14 @@ const Tbody = styled.tbody`
  border: none;
 `;
 
+type Board = { // 게시판 제목 타입
+  title: string;
+};
+
 type Post = { // 게시글의 타입
   id: number;
   title: string;
+  coment: number;
   author: string;
   date: string;
   views: number;
@@ -47,6 +53,7 @@ const posts: Post[] = [
   {
     id: 1,
     title: '오늘 진짜 귀여운 고양이 봤어!!',
+    coment:5,
     author: '박동주',
     date: '2023-04-10',
     views: 199,
@@ -56,6 +63,7 @@ const posts: Post[] = [
   {
     id: 2,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-11',
     views: 199,
@@ -65,6 +73,7 @@ const posts: Post[] = [
   {
     id: 3,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-12',
     views: 199,
@@ -74,6 +83,7 @@ const posts: Post[] = [
   {
     id: 4,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-13',
     views: 199,
@@ -83,6 +93,7 @@ const posts: Post[] = [
   {
     id: 5,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-14',
     views: 199,
@@ -92,6 +103,7 @@ const posts: Post[] = [
   {
     id: 6,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-15',
     views: 199,
@@ -101,6 +113,7 @@ const posts: Post[] = [
   {
     id: 7,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-16',
     views: 199,
@@ -110,6 +123,7 @@ const posts: Post[] = [
   {
     id: 8,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-17',
     views: 199,
@@ -119,6 +133,7 @@ const posts: Post[] = [
   {
     id: 9,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-18',
     views: 199,
@@ -128,21 +143,47 @@ const posts: Post[] = [
   {
     id: 10,
     title: '오늘 ',
+    coment:5,
     author: '박동주',
     date: '2023-04-19',
     views: 199,
     likes: 6,
     timestamp: Date.now(),
   },
+  {
+    id: 11,
+    title: '오늘 ',
+    coment:5,
+    author: '박동주',
+    date: '2023-04-20',
+    views: 199,
+    likes: 6,
+    timestamp: Date.now(),
+  },
+  {
+    id: 12,
+    title: '오늘 ',
+    coment:5,
+    author: '박동주',
+    date: '2023-04-21',
+    views: 199,
+    likes: 6,
+    timestamp: Date.now(),
+  },
+  {
+    id: 13,
+    title: '이번주 학식 완전 최고야!!',
+    coment:5,
+    author: '박동주',
+    date: '2023-04-22',
+    views: 199,
+    likes: 6,
+    timestamp: Date.now(),
+  },
+
 ];
 
 const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
-
-
-const StyledLink = styled.a`
-  cursor: pointer;
-  color: black;
-`;
 
 const Td = styled.td` // 게시글의 내용 부분
   height: 48px;
@@ -182,10 +223,10 @@ const Th = styled.th` // 게시글의 윗 머리 부분
   }
 `;
 
-function Test () {
+function Board () {
     return (  
       <InnerBox>                 
-      <Board>
+      <Div>
         <Title>자유게시판</Title>
         <Explain>다과회의 자유게시판입니다.</Explain>
         <Table>
@@ -202,24 +243,23 @@ function Test () {
           <tr key={post.id}>
             <Td>{post.id}</Td>
             <Td>
-              <Link href={'/a'}>
-                {/* <StyledLink>{post.title}</StyledLink> */}
-                {post.title}
+              <Link href={`/post/${post.id}`} passHref>
+                {post.title}[{post.coment}]
               </Link>
             </Td>
             <Td>{post.author}</Td>
-            <Td>{post.views}</Td>
             <Td>{post.date}</Td>
+            <Td>{post.views}</Td>
             <Td>{post.likes}</Td>
           </tr>
         ))}
           
         </Tbody>
         </Table>
-      </Board>
+      </Div>
       </InnerBox>
      
      );
   }
   
-  export default Test ;
+  export default Board ;
