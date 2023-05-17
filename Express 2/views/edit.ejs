@@ -19,7 +19,7 @@
         <div class="container mt-3">
             <form action="/edit?_method=PUT" method="POST">
                 <div class="form-group">
-                    <label>오늘의 할일</label>
+                    <label>글!!</label>
                     <!-- id정보는 숨겨서 보냄-->
                     <input
                         type="text"
@@ -52,8 +52,8 @@
                         name="content"
                     />
                 </div>
-                <button type="submit" class="btn btn-outline-secondary">
-                    Submit
+                <button type="submit" class="btn btn-outline-secondary edit">
+                    수정하기
                 </button>
             </form>
         </div>
@@ -63,5 +63,36 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
             crossorigin="anonymous"
         ></script>
+
+        <script>
+            // jQuery
+            $('.edit').click((e) => {
+                e.preventDefault();
+                let postId = e.target.dataset.id;
+                let form = $(e.target).closest('form');
+
+                $.ajax({
+                    method: 'PUT',
+                    url: '/edit',
+                    data: form.serialize(),
+                })
+                    .done((result) => {
+                        // 수정 성공시 실행할 코드는 여기
+                        location.reload(); // 페이지 새로고침
+                    })
+                    .fail((xhr, code, err) => {
+                        // 수정 실패시 실행할 코드
+                        console.log(xhr, code, err);
+                        alert(xhr.responseJSON.message);
+                        //let errorMessage = xhr.responseJSON.message;
+                        //showAlert(errorMessage); // 에러 메시지 표시 함수 호출
+                    });
+            });
+
+            function showAlert(errorMessage) {
+                // 에러 메시지를 알림 창으로 표시하는 함수
+                alert(errorMessage);
+            }
+        </script>
     </body>
 </html>
