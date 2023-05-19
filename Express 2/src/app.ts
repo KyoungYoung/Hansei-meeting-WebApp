@@ -69,7 +69,8 @@ app.post(
                 return next(err);
             }
         });
-        res.redirect('/mypage');
+        console.log('성공');
+        res.send('성공했어요');
     }
 );
 app.get('/fail', (req: Request | any, res: Response, next: NextFunction) => {
@@ -217,7 +218,8 @@ app.get('/search', (req: Request, res: Response) => {
 app.get('/write', (req: Request, res: Response, next: NextFunction) => {
     res.render('write.ejs');
 });
-// /write - 글 작성 페이지, form 데이터 /write-page로 POST 요청
+
+// /write - form 데이터 /write-page로 POST 요청
 app.post(
     '/write-page',
     (req: Request | any, res: Response, next: NextFunction) => {
@@ -227,15 +229,15 @@ app.post(
                 let total = result.totalPost;
                 let storage = {
                     _id: total + 1,
-
-                    작성자: req.user.id, // 현재 로그인한 사용자의 아이디를 작성자로 저장
+                    // 현재 로그인한 사람 정보
+                    작성자: req.user.id,
                     제목: req.body.title,
                     날짜: req.body.date,
                     내용: req.body.content,
                 };
                 db.collection('post').insertOne(
                     storage,
-                    (err: Error, result: any) => {
+                    (err: any, result: any) => {
                         db.collection('count').updateOne(
                             { name: '게시물갯수' },
                             { $inc: { totalPost: 1 } },
@@ -253,7 +255,7 @@ app.post(
     }
 );
 
-// /list - 목록 페이지, GET 요청 처리
+// /list GET 요청 처리
 app.get('/list', (req: Request, res: Response, next: NextFunction) => {
     // 작성자 정보 가져오기
     db.collection('login')
@@ -277,36 +279,34 @@ app.get('/list', (req: Request, res: Response, next: NextFunction) => {
                     res.render('list.ejs', {
                         loginData: loginResult,
                         posts: postResult,
-                        getAuthorName: (authorId: any) =>
-                            getAuthorName(authorId, loginResult, req),
+                        getAuthorName: getAuthorName,
                     });
                 });
         });
 });
 
-function getAuthorName(authorId: any, loginData: any, req: Request | any) {
-    // 현재 로그인한 사용자의 ID 가져오기
-    const loggedInUserId = req.user?.id;
-
-    // 작성자 ID와 로그인한 사용자의 ID 비교
-    if (authorId === loggedInUserId) {
-        return '나 (작성자)';
-    } else {
-        // 작성자 id를 사용하여 작성자 이름을 가져오는 로직 구현
-        const author =
-            loginData && loginData.find((login: any) => login._id === authorId);
-        return author ? author.name : '';
-    }
+// getAuthorName 함수 정의
+function getAuthorName(authorId: any, loginData: any) {
+    // 작성자 id를 사용하여 작성자 이름을 가져오는 로직 구현
+    const author =
+        loginData && loginData.find((login: any) => login.id === authorId);
+    return author ? author.name : '';
 }
 
-// /delete - 삭제
+// /delete
 app.delete('/delete', (req: Request | any, res: Response) => {
     // db에서 삭제하기
     console.log(req.body);
 
-    req.body._id = parseInt(req.body._id);
-    // 실제 로그인 유저 id와 글에 저장된 id 일치하는지 확인
-    let deleteData = { _id: req.body._id, 작성자: req.user._id };
+    // 로그인 사용자 ID 확인
+    const loggedInUserId = req.user.id;
+    // 클라이언트에서 전달된 _id 값
+    const postId = parseInt(req.body._id);
+    // 실제 로그인 유저 ID와 글에 저장된 작성자 ID 일치 여부 확인
+    const deleteData = { _id: postId, 작성자: loggedInUserId };
+
+    console.log('작성자 ID:', loggedInUserId);
+    console.log('_id 값:', postId);
 
     db.collection('post').findOne(deleteData, (err: Error, post: any) => {
         if (err) {
@@ -325,7 +325,6 @@ app.delete('/delete', (req: Request | any, res: Response) => {
         db.collection('post').deleteOne(
             deleteData,
             (err: Error, result: any) => {
-                console.log('삭제완료');
                 if (err) {
                     console.log(err);
                     res.status(500).send({ message: '오류가 발생했습니다.' });

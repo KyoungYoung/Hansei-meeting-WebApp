@@ -62,29 +62,32 @@
         <script>
             // 제이쿼리
             $('.delete').click((e) => {
+                let confirmDelete = confirm('정말로 이 글을 삭제하시겠습니까?');
+                if (!confirmDelete) {
+                    return;
+                }
                 let postNum = e.target.dataset.id;
-                //let nowPush = $(this);
                 let listItem = $(e.target).closest('li');
                 $.ajax({
                     method: 'DELETE',
                     url: '/delete',
                     data: { _id: postNum },
+                    dataType: 'json',
                 })
                     .done((result) => {
-                        //AJAX 성공시 실행할 코드는 여기
+                        // AJAX 성공시 실행할 코드는 여기
                         listItem.fadeOut(() => {
                             // 리스트 아이템이 사라진 후 페이지를 새로고침
                             location.reload();
                         });
                     })
                     .fail((xhr, code, err) => {
-                        //AJAX 실패시 실행할 코드적기
+                        // AJAX 실패시 실행할 코드적기
                         console.log(xhr, code, err);
                         // 서버로부터 받은 메시지 표시
                         alert(xhr.responseJSON.message);
                     });
             });
-
             $('#search').click(() => {
                 let inputValue = $('#search-input').val();
                 window.location.replace('/search?value=' + inputValue);
