@@ -1,0 +1,260 @@
+/post/write:
+    get:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 작성 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "작성자": "kky",
+                        "제목": "테스트",
+                        "날짜": "5/22",
+                        "내용":"테스트입니다!"
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/post/write-page:
+    post:
+        tags:
+            - Post - (DB table = post)
+        summary: 글 검색 요청
+        consumes:
+            - application/json
+        requestBody:
+            x-name: body
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: './openapi.yaml#/components/schemas/user'
+                    examples:
+                        userExample:
+                            $ref: './openapi.yaml#/components/examples/userExample'
+        responses:
+            '200':
+                $ref: './openapi.yaml#/components/responses/successResponse'
+            '400':
+                $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+                $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/post/search:
+    get:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 검색 결과 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "작성자": "kky",
+                        "제목": "테스트",
+                        "날짜": "5/22",
+                        "내용":"테스트입니다!"
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+
+/post/list:
+    get:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 목록 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "작성자": "kky",
+                        "제목": "테스트",
+                        "날짜": "5/22",
+                        "내용":"테스트입니다!"
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+
+/post/delete:
+    delete:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 삭제 요청
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/post/edit/:id:
+    get:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 수정 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/post/edit:
+    put:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 수정 요청
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/post/detail/:id:
+    get:
+          tags:
+            - Post - (DB table = post)
+          summary: 글 상세 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'

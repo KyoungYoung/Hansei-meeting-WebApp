@@ -1,0 +1,177 @@
+/user/login:
+        post:
+            tags:
+                - User - (DB table = login)
+            summary: 로그인 요청
+            consumes:
+                - application/json
+            requestBody:
+                x-name: body
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: './openapi.yaml#/components/schemas/user'
+                        examples:
+                            userExample:
+                                $ref: './openapi.yaml#/components/examples/userExample'
+            responses:
+                '200':
+                    $ref: './openapi.yaml#/components/responses/successResponse'
+                '400':
+                    $ref: './openapi.yaml#/components/responses/BadRequest'
+                '500':
+                    $ref: './openapi.yaml#/components/responses/InternalServerError'
+        get:
+          tags:
+            - User - (DB table = login)
+          summary: 로그인 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/user/join:
+        get:
+          tags:
+            - User - (DB table = login)
+          summary: 회원가입 페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 유저 조회 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+        post:
+          tags:
+              - User - (DB table = login)
+          summary: 회원가입 요청
+          consumes:
+              - application/json
+          requestBody:
+              x-name: body
+              required: true
+              content:
+                  application/json:
+                      schema:
+                          $ref: './openapi.yaml#/components/schemas/user'
+                      examples:
+                          userExample:
+                              $ref: './openapi.yaml#/components/examples/userExample'
+          responses:
+              '200':
+                  $ref: './openapi.yaml#/components/responses/successResponse'
+              '400':
+                  $ref: './openapi.yaml#/components/responses/BadRequest'
+              '500':
+                  $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/user/mypage:
+        get:
+          tags:
+            - User - (DB table = login)
+          summary: 로그인 성공 후 마이페이지
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 로그인 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/user/fail:
+        get:
+          tags:
+            - User - (DB table = login)
+          summary: 로그인 실패
+          parameters:
+            - in: path
+              name: userId
+              required: true
+              description: 유저 id
+              schema:
+                type: string
+          responses:
+            '200':
+              description: 로그인 성공
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    example: {
+                    "status": 200,
+                      "success": true,
+                      "message": "유저 조회 성공",
+                        "_id": "646481d031f42355d9ea5f8e",
+                        "id": "kky",
+                        "pw": "1214",
+                      }
+                  
+            '400':
+              $ref: './openapi.yaml#/components/responses/BadRequest'
+            '500':
+              $ref: './openapi.yaml#/components/responses/InternalServerError'

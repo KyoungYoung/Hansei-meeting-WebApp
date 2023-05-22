@@ -1,8 +1,11 @@
-import express, { Request, Response, NextFunction } from 'express';
-const app = express();
-// socket.io 사용하기
-// const http = require('http');
-// const server = http.createServer(app);
+import express, { Application, Request, Response, NextFunction } from 'express';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
+const app: Application = express();
+const swaggerSpec = YAML.load(path.join(__dirname, '../build/swagger.yaml'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const methodOverride = require('method-override');
 const MongoClient = require('mongodb').MongoClient;
@@ -53,12 +56,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // /login - 로그인 페이지
-app.get('/login', (req: Request, res: Response, next: NextFunction) => {
+app.get('/user/login', (req: Request, res: Response, next: NextFunction) => {
     res.render('login.ejs');
 });
 // 로그인 실패하면 /fail로 리다이렉트
 app.post(
-    '/login',
+    '/user/login',
     passport.authenticate('local', {
         failureRedirect: '/fail',
         failureFlash: true,
@@ -73,15 +76,18 @@ app.post(
         res.send('성공했어요');
     }
 );
-app.get('/fail', (req: Request | any, res: Response, next: NextFunction) => {
-    const errorMessage = req.flash('error')[0];
-    res.send(`
+app.get(
+    '/user/fail',
+    (req: Request | any, res: Response, next: NextFunction) => {
+        const errorMessage = req.flash('error')[0];
+        res.send(`
         <script>
             alert("${errorMessage}");
             window.location.href = "/login";
         </script>
     `);
-});
+    }
+);
 
 // 아이디 비번 인증하는 세부 코드
 passport.use(
@@ -137,7 +143,7 @@ passport.deserializeUser((id: any, done: any) => {
 
 // /mypage - 마이 페이지
 app.get(
-    '/mypage',
+    '/user/mypage',
     loginUser,
     (req: Request | any, res: Response, next: NextFunction) => {
         console.log(req.user);
@@ -156,11 +162,14 @@ function loginUser(req: Request | any, res: Response, next: any) {
 }
 
 // /join - 회원가입 페이지
-app.get('/join', (req: Request | any, res: Response, next: NextFunction) => {
-    res.render('join.ejs');
-});
+app.get(
+    '/user/join',
+    (req: Request | any, res: Response, next: NextFunction) => {
+        res.render('join.ejs');
+    }
+);
 
-app.post('/join', (req: Request, res: Response, next: NextFunction) => {
+app.post('/user/join', (req: Request, res: Response, next: NextFunction) => {
     // login 컬렉션에 회원가입 정보 저장하기
     db.collection('login').insertOne(
         { id: req.body.id, pw: req.body.pw },
@@ -172,7 +181,7 @@ app.post('/join', (req: Request, res: Response, next: NextFunction) => {
 });
 
 // /search - 검색 페이지
-app.get('/search', (req: Request, res: Response) => {
+app.get('/post/search', (req: Request, res: Response) => {
     // 검색어에 숫자가 있어도 일치시키기 위한 정규식
     const searchValue: any = req.query.value; // 타입을 명시적으로 지정
     console.log(typeof searchValue);
@@ -215,13 +224,13 @@ app.get('/search', (req: Request, res: Response) => {
 });
 
 // /write 글 작성 페이지
-app.get('/write', (req: Request, res: Response, next: NextFunction) => {
+app.get('/post/write', (req: Request, res: Response, next: NextFunction) => {
     res.render('write.ejs');
 });
 
 // /write - form 데이터 /write-page로 POST 요청
 app.post(
-    '/write-page',
+    '/post/write-page',
     (req: Request | any, res: Response, next: NextFunction) => {
         db.collection('count').findOne(
             { name: '게시물갯수' },
@@ -256,7 +265,7 @@ app.post(
 );
 
 // /list GET 요청 처리
-app.get('/list', (req: Request, res: Response, next: NextFunction) => {
+app.get('/post/list', (req: Request, res: Response, next: NextFunction) => {
     // 작성자 정보 가져오기
     db.collection('login')
         .find()
@@ -294,7 +303,7 @@ function getAuthorName(authorId: any, loginData: any) {
 }
 
 // /delete
-app.delete('/delete', (req: Request | any, res: Response) => {
+app.delete('/post/delete', (req: Request | any, res: Response) => {
     // db에서 삭제하기
     console.log(req.body);
 
@@ -339,7 +348,7 @@ app.delete('/delete', (req: Request | any, res: Response) => {
 
 // /edit - 수정페이지
 app.get(
-    '/edit/:id',
+    '/post/edit/:id',
     (req: Request | any, res: Response, next: NextFunction) => {
         const postId = parseInt(req.params.id);
         const loggedInUserId = req.user?.id;
@@ -367,48 +376,51 @@ app.get(
         );
     }
 );
-app.put('/edit', (req: Request | any, res: Response, next: NextFunction) => {
-    const postId = parseInt(req.body.id);
-    const loggedInUserId = req.user?.id;
+app.put(
+    '/post/edit',
+    (req: Request | any, res: Response, next: NextFunction) => {
+        const postId = parseInt(req.body.id);
+        const loggedInUserId = req.user?.id;
 
-    db.collection('post').findOne(
-        { _id: postId },
-        (err: Error, result: any) => {
-            if (err) {
-                return next(err);
-            }
+        db.collection('post').findOne(
+            { _id: postId },
+            (err: Error, result: any) => {
+                if (err) {
+                    return next(err);
+                }
 
-            // 작성자와 로그인한 사용자가 같은 경우에만 글을 수정합니다.
-            if (result && result.작성자 === loggedInUserId) {
-                db.collection('post').updateOne(
-                    { _id: postId },
-                    {
-                        $set: {
-                            제목: req.body.title,
-                            날짜: req.body.date,
-                            내용: req.body.content,
+                // 작성자와 로그인한 사용자가 같은 경우에만 글을 수정합니다.
+                if (result && result.작성자 === loggedInUserId) {
+                    db.collection('post').updateOne(
+                        { _id: postId },
+                        {
+                            $set: {
+                                제목: req.body.title,
+                                날짜: req.body.date,
+                                내용: req.body.content,
+                            },
                         },
-                    },
-                    (err: Error, result: any) => {
-                        if (err) {
-                            return next(err);
+                        (err: Error, result: any) => {
+                            if (err) {
+                                return next(err);
+                            }
+                            console.log('수정!');
+                            // /list로 이동
+                            res.redirect('/list');
                         }
-                        console.log('수정!');
-                        // /list로 이동
-                        res.redirect('/list');
-                    }
-                );
-            } else {
-                res.status(403).send({
-                    message: '수정할 수 있는 권한이 없습니다.',
-                });
+                    );
+                } else {
+                    res.status(403).send({
+                        message: '수정할 수 있는 권한이 없습니다.',
+                    });
+                }
             }
-        }
-    );
-});
+        );
+    }
+);
 
 // /detail - 상세 글 페이지
-app.get('/detail/:id', (req: Request, res: Response) => {
+app.get('/post/detail/:id', (req: Request, res: Response) => {
     db.collection('post').findOne(
         { _id: parseInt(req.params.id) },
         (err: Error, result: any) => {
@@ -416,15 +428,3 @@ app.get('/detail/:id', (req: Request, res: Response) => {
         }
     );
 });
-// // Socket.io 설정
-// const io = require('socket.io')(server);
-// io.on('connection', (socket: any) => {
-//     // 클라이언트와 연결이 수립되면 실행될 코드
-
-//     // 작성자와 로그인한 사용자가 다른 경우, 클라이언트에 알람 메시지를 전송
-//     socket.on('showAlert', () => {
-//         socket.emit('alertMessage', {
-//             message: '수정할 수 있는 권한이 없습니다.',
-//         });
-//     });
-// });

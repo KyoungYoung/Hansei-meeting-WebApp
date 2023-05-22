@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: SOPT API docs
+    description: SOPT SERVER SEMINAR
+    license:
+        name: kky
+servers:
+    - url: http://localhost:8000/
+components:
+    parameters: null
+    #Schemas : model 정보
+    schemas:
+        user:
+            properties:
+                name:
+                    type: string
+                    description: 유저 이름
+                age:
+                    type: number
+                    description: 유저 나이
+                phone:
+                    type: string
+                    description: 핸드폰번호
+                email:
+                    type: string
+                    description: 이메일 주소
+                school:
+                    properties:
+                        name:
+                            type: string
+                            description: 학교 이름
+                        major:
+                            type: string
+                            description: 전공
+        post:
+
+        Error:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+    #Examples
+    examples:
+        userExample:
+            value: { 'id': '홍길동', 'pw': '01011112222' }
+    #Responses 재사용되는 애들
+    responses:
+        successResponse:
+            description: successful request with no data
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        example:
+                            {
+                                'status': 200,
+                                'success': true,
+                                'message': 'message',
+                            }
+        BadRequest:
+            description: 잘못된 요청
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        success: false
+                        message: 잘못된 요청
+        InternalServerError:
+            description: 서버 에러
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        success: false
+                        message: 서버 내부 오류
+#Paths api 경로 지정
+paths:
+    /user/login:
+        $ref: './user.yaml#/~1user~1login'
+    /user/join:
+        $ref: './user.yaml#/~1user~1join'
+    /user/mypage:
+        $ref: './user.yaml#/~1user~1mypage'
+    /user/fail:
+        $ref: './user.yaml#/~1user~1fail'
+    /post/write:
+        $ref: './post.yaml#/~1post~1write'
+    /post/write-page:
+        $ref: './post.yaml#/~1post~1write-page'
+    /post/search:
+        $ref: './post.yaml#/~1post~1search'
+    /post/list:
+        $ref: './post.yaml#/~1post~1list'
+    /post/delete:
+        $ref: './post.yaml#/~1post~1delete'
+
+    /post/edit/:id:
+        $ref: './post.yaml#/~1post~1edit~1:id'
+    /post/edit:
+        $ref: './post.yaml#/~1post~1edit'
+    /post/detail/:id:
+        $ref: './post.yaml#/~1post~1detail~1:id'
+
+    # /user/{userId}:
+    #     $ref: './user.yaml#/~1user~1{userId}'

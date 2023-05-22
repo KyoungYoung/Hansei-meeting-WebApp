@@ -31,7 +31,7 @@
             <ul class="list-group">
                 <% for (let i = 0; i < posts.length; i++){ %>
                 <li class="list-group-item">
-                    <a href="/detail/<%= posts[i]._id%>">
+                    <a href="/post/detail/<%= posts[i]._id%>">
                         <h4>제목: <%= posts[i].제목 %></h4>
                     </a>
                     <!-- <p>
@@ -90,7 +90,7 @@
             });
             $('#search').click(() => {
                 let inputValue = $('#search-input').val();
-                window.location.replace('/search?value=' + inputValue);
+                window.location.replace('/post/search?value=' + inputValue);
             });
 
             $('#search-input').keypress(function (event) {
@@ -99,7 +99,7 @@
                     event.preventDefault(); // 기본 엔터 동작을 방지합니다.
 
                     let inputValue = $(this).val();
-                    window.location.replace('/search?value=' + inputValue);
+                    window.location.replace('/post/search?value=' + inputValue);
                 }
             });
         </script>

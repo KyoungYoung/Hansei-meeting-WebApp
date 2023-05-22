@@ -1,0 +1,480 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: SOPT API docs
+  description: SOPT SERVER SEMINAR
+  license:
+    name: kky
+servers:
+  - url: 'http://localhost:8000/'
+components:
+  parameters: null
+  schemas:
+    user:
+      properties:
+        name:
+          type: string
+          description: 유저 이름
+        age:
+          type: number
+          description: 유저 나이
+        phone:
+          type: string
+          description: 핸드폰번호
+        email:
+          type: string
+          description: 이메일 주소
+        school:
+          properties:
+            name:
+              type: string
+              description: 학교 이름
+            major:
+              type: string
+              description: 전공
+    post: null
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+  examples:
+    userExample:
+      value:
+        id: 홍길동
+        pw: '01011112222'
+  responses:
+    successResponse:
+      description: successful request with no data
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              status: 200
+              success: true
+              message: message
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: 잘못된 요청
+    InternalServerError:
+      description: 서버 에러
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: 서버 내부 오류
+paths:
+  /user/login:
+    post:
+      tags:
+        - User - (DB table = login)
+      summary: 로그인 요청
+      consumes:
+        - application/json
+      requestBody:
+        x-name: body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+            examples:
+              userExample:
+                $ref: '#/components/examples/userExample'
+      responses:
+        '200':
+          $ref: '#/components/responses/successResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - User - (DB table = login)
+      summary: 로그인 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /user/join:
+    get:
+      tags:
+        - User - (DB table = login)
+      summary: 회원가입 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - User - (DB table = login)
+      summary: 회원가입 요청
+      consumes:
+        - application/json
+      requestBody:
+        x-name: body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+            examples:
+              userExample:
+                $ref: '#/components/examples/userExample'
+      responses:
+        '200':
+          $ref: '#/components/responses/successResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /user/mypage:
+    get:
+      tags:
+        - User - (DB table = login)
+      summary: 로그인 성공 후 마이페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /user/fail:
+    get:
+      tags:
+        - User - (DB table = login)
+      summary: 로그인 실패
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /post/write:
+    get:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 작성 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  작성자: kky
+                  제목: 테스트
+                  날짜: 5/22
+                  내용: 테스트입니다!
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /post/write-page:
+    post:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 검색 요청
+      consumes:
+        - application/json
+      requestBody:
+        x-name: body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+            examples:
+              userExample:
+                $ref: '#/components/examples/userExample'
+      responses:
+        '200':
+          $ref: '#/components/responses/successResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /post/search:
+    get:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 검색 결과 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  작성자: kky
+                  제목: 테스트
+                  날짜: 5/22
+                  내용: 테스트입니다!
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /post/list:
+    get:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 목록 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  작성자: kky
+                  제목: 테스트
+                  날짜: 5/22
+                  내용: 테스트입니다!
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /post/delete:
+    delete:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 삭제 요청
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/post/edit/:id':
+    get:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 수정 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /post/edit:
+    put:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 수정 요청
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/post/detail/:id':
+    get:
+      tags:
+        - Post - (DB table = post)
+      summary: 글 상세 페이지
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  _id: 646481d031f42355d9ea5f8e
+                  id: kky
+                  pw: '1214'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
