@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -179,11 +180,14 @@ interface Data {
   url: string;
 }
 
-const MajorBoard = () => {
+const MajorBoard = ({data}) => {
+  const router = useRouter();
+  const majorname = router.query.Major;
+
   return (
     <MainBox>
       <Container>
-        <MajorBox>신학과</MajorBox>
+        <MajorBox>{majorname}</MajorBox>
         <Button>좋아요</Button>
         <Button>별점</Button>
         <Button>후기</Button>
@@ -205,8 +209,8 @@ const MajorBoard = () => {
       </CategoryContent>
       </CategoryBox>
       <CategoryBox2>
-          <CategoryTitle2>신학과 자유게시판</CategoryTitle2>
-          {postdata.map((data: Data) => (
+          <CategoryTitle2>{majorname} 게시판</CategoryTitle2>
+          {data.map((data: Data) => (
           <InnerBox2 href={data.url} key={data.title}>{data.title}</InnerBox2>))}
           <Link href={'/board'}><RequestButton>더보기</RequestButton></Link>
           </CategoryBox2>
@@ -214,6 +218,13 @@ const MajorBoard = () => {
       </BottomWrapper>
     </MainBox>
   );
+};
+
+export const getServerSideProps
+ = async () => {
+  //const res = await fetch('https://api.github.com/repos/vercel/next.js');
+  //const repo = await res.json();
+  return { props: {data: postdata } };
 };
 
 export default MajorBoard;

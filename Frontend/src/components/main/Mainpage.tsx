@@ -22,12 +22,11 @@ const TwoBox = styled.div` /*CategoryBox3, 4 묶음*/
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
 `;
 
 const TopBox = styled.div`
   position: absolute;
-  width: 1519.5px;
+  width: 100%;
   height: 70px;
   top: 0;
   left: 0;
@@ -94,13 +93,14 @@ const BottomWrapper = styled.div`
 
 const CategoryBox = styled.div`
   background-color: #F6FFF1;
+  height: 687px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border: solid gray;
   border-radius: 0.5rem;
-  margin-right: 30px;
+  margin-right: 3rem;
   margin-top: 70px;
   padding-left: 50px;
   padding-right: 50px;
@@ -222,7 +222,40 @@ const RequestButton = styled.button`
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  text-decoration: none;
 `;
+
+//
+const LoginContainer = styled.div`
+  display: block;
+  width:150px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
+  background-color: #DAEEFD;
+  a {text-decoration: none;};
+`;
+
+const Username = styled.span`
+  font-size: 14px;
+  margin-left: 10px;
+  word-break:keep-all;
+  color:black;
+  text-decoration: none;
+`;
+
+const LoginButton = styled.button`
+  padding: 10px;
+  font-weight:600;
+  box-sizing:border-box;
+  color:green;
+  word-break:keep-all;
+  background-color: transparent;
+  border: none;
+  
+`;
+
+//
 
 const frontdata = [
   {
@@ -327,6 +360,16 @@ const majorlist7 = [
 
 const Mainpage: React.FC = () => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn]=useState(false);
+  const username ="테스트이름";
+
+  const handleLogout = () => {
+    setIsLoggedIn(!isLoggedIn)
+  };
+
+  const handleLogin=()=>{
+    setIsLoggedIn(!isLoggedIn)
+  }
 
 
   return (
@@ -340,7 +383,16 @@ const Mainpage: React.FC = () => {
        <Sublist2 title={majorlist5} menuName={'예술학부'} />
        <Sublist2 title={majorlist6} menuName={'디자인학부'} />
        <Sublist2 title={majorlist7} menuName={'계약학과'} />
-        <Link href={'/a'}><ButtonWrapper>요청하기</ButtonWrapper></Link>
+        <ButtonWrapper>요청하기</ButtonWrapper>
+        <LoginContainer>
+          {isLoggedIn && (
+            <>
+              <Link href={'/mypage'}><Username>{username}</Username></Link>
+              <LoginButton onClick={handleLogout}>로그아웃</LoginButton>
+            </>
+          )}
+          {!isLoggedIn && <LoginButton onClick={handleLogin}>로그인</LoginButton>}
+        </LoginContainer>
         </TopBox>
 
       <BottomWrapper>
