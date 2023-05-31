@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Link from 'next/link';
 import Image from 'next/image';
 import Sublist from './Sublist';
-
+import Sublist2 from './Sublist2';
 
 interface SubMenuProps {
   isOpen: boolean;
@@ -38,7 +38,7 @@ const TopBox = styled.div`
 `;
 
 const Logo = styled(Image)`
-  margin-right: 1rem;
+  margin-left: 30px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -283,6 +283,48 @@ interface DummyData { //타입지정
   url: string;
 }
 
+const majorlist = [
+  { name : '신학과'},
+  { name : '기독교교육상담학과'}
+]
+
+const majorlist2 = [
+  {name : '미디어영상광고학과'},
+  {name : '경영학과'},
+  {name : '경찰행정학과'},
+  {name : '국제관광학과'},
+  {name : '영어학과'},
+  {name : '중국어학과'}
+]
+
+const majorlist3 = [
+  {name : '컴퓨터공학과'},
+  {name : 'ICT융합학과'},
+  {name : '산업보안학과'}
+]
+
+const majorlist4 = [
+  {name : '간호학과'},
+  {name : '사회복지학과'}
+]
+
+const majorlist5 = [
+  {name : '음악학과'},
+  {name : '공연예술학과'}
+]
+
+const majorlist6 = [
+  {name : '시각정보디자인학과'},
+  {name : '실내건축디자인학과'},
+  {name : '섬유패션디자인학과'}
+]
+
+const majorlist7 = [
+  {name : '보건복지 사회적기업학과'},
+  {name : '보건융합 사회적경제학과'},
+  {name : '스마트콘텐츠마케팅학과'}
+]
+
 const Mainpage: React.FC = () => {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -290,50 +332,22 @@ const Mainpage: React.FC = () => {
   return (
     <MainContainer>
       <TopBox>
-      <Logo width={150} height={150} alt='' src="/logo2.png" />
-       <Sublist menuName={'신학부'}>
-        <SubMenuItem>신학과</SubMenuItem>
-        <SubMenuItem>기독교상담교육학과</SubMenuItem>
-        </Sublist>
-        <Sublist menuName={"인문사회과학부"}>
-          <SubMenuItem>미디어영상광고학과</SubMenuItem>
-          <SubMenuItem>경영학과</SubMenuItem>
-          <SubMenuItem>경찰행정학과</SubMenuItem>
-          <SubMenuItem>국제관광학과</SubMenuItem>
-          <SubMenuItem>영어학과</SubMenuItem>
-          <SubMenuItem>중국어학과</SubMenuItem>
-        </Sublist>
-        <Sublist menuName={"IT학부"}>
-          <SubMenuItem>컴퓨터공학과</SubMenuItem>
-          <SubMenuItem>ICT융합학과</SubMenuItem>
-          <SubMenuItem>산업보안학과</SubMenuItem>
-        </Sublist>
-        <Sublist menuName={'간호복지학부'}>
-            <SubMenuItem>간호학과</SubMenuItem>
-            <SubMenuItem>사회복지학과</SubMenuItem>
-            </Sublist>
-            <Sublist menuName={'예술학부'}>
-            <SubMenuItem>음악학과</SubMenuItem>
-            <SubMenuItem>공연예술학과</SubMenuItem>
-            </Sublist>
-            <Sublist menuName={'디자인학부'}>
-            <SubMenuItem>시각정보디자인학과</SubMenuItem>
-            <SubMenuItem>실내건축디자인학과</SubMenuItem>
-            <SubMenuItem>섬유패션디자인학과</SubMenuItem>
-            </Sublist>
-            <Sublist menuName={'계약학과'}>
-            <SubMenuItem>보건복지 사회적기업학과</SubMenuItem>
-            <SubMenuItem>보건융합 사회적경제학과</SubMenuItem>
-            <SubMenuItem>스마트콘텐츠마케팅학과</SubMenuItem>
-            </Sublist>
-        <ButtonWrapper>요청하기</ButtonWrapper>
+      <Link href={'/a'}><Logo width={75} height={75} alt='' src="/logo2.png" /></Link>
+       <Sublist2 title={majorlist} menuName={'신학부'} />
+       <Sublist2 title={majorlist2} menuName={'인문사화과학부'} />
+       <Sublist2 title={majorlist3} menuName={'IT학부'} />
+       <Sublist2 title={majorlist4} menuName={'간호복지학부'} />
+       <Sublist2 title={majorlist5} menuName={'예술학부'} />
+       <Sublist2 title={majorlist6} menuName={'디자인학부'} />
+       <Sublist2 title={majorlist7} menuName={'계약학과'} />
+        <Link href={'/a'}><ButtonWrapper>요청하기</ButtonWrapper></Link>
         </TopBox>
 
       <BottomWrapper>
         <CategoryBox>
         <CategoryTitle> 자유게시판 </CategoryTitle>
         {frontdata.map((data)=> <InnerBox href={data.url}>{data.title}</InnerBox>)}
-        <RequestButton>더보기</RequestButton>
+        <Link href={'/board'}><RequestButton>더보기</RequestButton></Link>
         </CategoryBox>
 
         <CategoryBox2>
@@ -347,7 +361,7 @@ const Mainpage: React.FC = () => {
         <CategoryBox3>
         <CategoryTitle2> 별점순 </CategoryTitle2>
         <InnerBox3>⭐ 경영학과</InnerBox3>
-        <InnerBox3>⭐ ict융합학과</InnerBox3>
+        <InnerBox3>⭐ ICT융합학과</InnerBox3>
         <InnerBox3>⭐ 컴퓨터공학과</InnerBox3>
         </CategoryBox3>
 
