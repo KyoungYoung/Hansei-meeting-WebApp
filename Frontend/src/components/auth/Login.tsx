@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
 import styled from "styled-components";
 import { useForm, SubmitHandler  } from "react-hook-form";
+import { useRouter } from 'next/router';
 
 const Container = styled.div`
   display: flex;
@@ -81,7 +82,7 @@ const BottomLinkWrapper=styled.div`
 const ErrorText= styled.span`
   display:inline-block;
   color:chocolate;
-  font-size:12px;
+  font-size:14px;
   text-decoration:none;
   height:8px;
   width:100%;
@@ -92,7 +93,9 @@ interface LoginProps {
 }
 
 function Login() {
-    const { register, formState:{errors}, handleSubmit } = useForm<LoginProps>();
+    const router= useRouter()
+    const [errorText, setErrorText]=useState('');
+    const { register, formState:{errors,isSubmitting}, handleSubmit } = useForm<LoginProps>({mode:'onChange'});
     const onSubmit: SubmitHandler<LoginProps> =useCallback(async (e)=>{
       const data={
         username:e.userId,
@@ -106,13 +109,20 @@ function Login() {
         },
         body: JSONdata,
       };
-      const apiURL='/api/login'
+      const apiURL=`/api/${process.env.NEXT_PUBLIC_VAPI}/login`
    
       const response = await fetch(apiURL, options);
-   
-      const result = await response.json();
-      
-
+      if(response.ok){
+        switch(response.status){
+          case 201:
+            router.push(await response.text() )
+            break;
+          case 200:
+            const result = await response.json();
+          }
+        }else{
+          setErrorText("이메일 또는 비밀번호를 확인하세요");
+        }
     },[]) 
   return (
     <Container>
@@ -124,27 +134,29 @@ function Login() {
             <Field
               placeholder="아이디 및 이메일"
               type="text"
-               {...register("userId",{ required: true })}
+               {...register("userId",{ required: "아이디 및 이메일을 입력해주세요" })}
             />
             <StyledLabel htmlFor='password'>비밀번호</StyledLabel>
             <Field
-            {... register("password",{ required: true })}
+            {... register("password",{ required: "비밀번호를 입력해주세요" })}
               placeholder="비밀번호"
               type="password"
             />
-            <ErrorText>{errors.userId&&"아이디 및 이메일을 입력해주세요" ||errors.password&&"비밀번호를 입력해주세요"}</ErrorText>
+            <ErrorText>{errorText||errors.userId&&errors?.userId.message||errors.password&&errors?.password.message}</ErrorText>
+
           </FieldWapper>  
           <LoginButton type="submit">로그인</LoginButton>
           <BottomLinkWrapper>
             {/* 나중에 경로 채우기 */}
-            <Link href='/user/v1/findingid' passHref legacyBehavior><PageLinkText>아이디 찾기</PageLinkText></Link>
-            <Link href='/user/v1/findingpw' passHref legacyBehavior><PageLinkText>비밀번호 찾기</PageLinkText></Link>
-            <Link href='/user/signup' passHref legacyBehavior><PageLinkText>회원가입</PageLinkText></Link>
+            <Link href='/user/findingid' passHref legacyBehavior><PageLinkText>아이디 찾기</PageLinkText></Link>
+            <Link href='/user/findingpw' passHref legacyBehavior><PageLinkText>비밀번호 찾기</PageLinkText></Link>
+            <Link href='/auth/signup' passHref legacyBehavior><PageLinkText>회원가입</PageLinkText></Link>
           </BottomLinkWrapper>
         </form>
       </Card>
     </Container>
   );
 }
+
 
 export default Login;
