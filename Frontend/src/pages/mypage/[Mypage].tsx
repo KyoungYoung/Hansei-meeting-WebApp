@@ -108,7 +108,7 @@ const MyTitle = styled.h2` /*마이페이지*/
 `;
 
 
-type content = { /*이름, 학과, 아이디 타입지정*/
+type Content = { /*이름, 학과, 아이디 타입지정*/
 name: string;
 id: string;
 major: string;
@@ -116,7 +116,7 @@ grade: number;
 no: number;
 };
 
-const Contents: content[] = [
+const Contents: Content[] = [
   {
     name:'홍길동',
     id: 'Hong1234',
@@ -138,9 +138,9 @@ const RequestButton = styled.button` /*정보변경 버튼*/
 `;
 
 
-const Mypage: React.FC = () => {
+const Mypage = ({data}:{data:Content[]}) => {
   const router = useRouter();
-  const majorname = router.query.Major;
+  const majorname = router.query.Mypage;
   
   return (
        <Div>
@@ -149,7 +149,7 @@ const Mypage: React.FC = () => {
       </TitleBox>
         <CategoryBox>
           <CategoryBox2>
-          {Contents.map((content, index) => (
+          {data.map((content, index) => (
             <ContentContainer key={index}>
               <ContentTitle>내 정보</ContentTitle>
               <ContentText>이름: {content.name}</ContentText>
@@ -163,7 +163,7 @@ const Mypage: React.FC = () => {
           </CategoryBox2>
           <CategoryBox3>
           <ImageBox>
-            <Image src="meow.png" />
+            <Image src="/meow.png" />
             </ImageBox>
             <CategoryBox4>
             <Link href = {'/a'}><RequestButton>정보 변경</RequestButton>
@@ -176,6 +176,11 @@ const Mypage: React.FC = () => {
     
   );
   };
-
+  export const getServerSideProps
+ = async () => {
+  //const res = await fetch('https://api.github.com/repos/vercel/next.js');
+  //const repo = await res.json();
+  return { props: {data: Contents} };
+};
 
 export default Mypage;

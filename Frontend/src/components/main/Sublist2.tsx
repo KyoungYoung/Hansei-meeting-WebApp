@@ -45,11 +45,13 @@ const SubMenuList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  & a{text-decoration: none;};
 `;
 
 const SubMenuItem = styled.li`
   font-size: 0.85rem;
   padding: 0.25rem 0;
+  color:black;
 `;
 
 interface Props{

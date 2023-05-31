@@ -33,7 +33,7 @@ const TopBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #DAEEFD;
+  background-color: black;
 `;
 
 const Logo = styled(Image)`
@@ -168,6 +168,7 @@ const CategoryTitle3 = styled.div`
 
 const InnerBox = styled(Link)`
   text-decoration-line:none;
+  
   font-size: smaller;
   width: 250px;
   height: 30px;
@@ -232,23 +233,25 @@ const LoginContainer = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 5px;
-  background-color: #DAEEFD;
+  background-color: transparent;
   a {text-decoration: none;};
 `;
 
 const Username = styled.span`
   font-size: 14px;
   margin-left: 10px;
+  font-weight:600;
   word-break:keep-all;
-  color:black;
+  color:white;
   text-decoration: none;
 `;
 
 const LoginButton = styled.button`
   padding: 10px;
-  font-weight:600;
+  font-weight:1000;
+  font-style:bold;
   box-sizing:border-box;
-  color:green;
+  color:white;
   word-break:keep-all;
   background-color: transparent;
   border: none;

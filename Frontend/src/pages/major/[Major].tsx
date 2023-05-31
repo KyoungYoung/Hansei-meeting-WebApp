@@ -180,7 +180,7 @@ interface Data {
   url: string;
 }
 
-const MajorBoard = ({data}) => {
+const MajorBoard = ({data}:{data:Data[]}) => {
   const router = useRouter();
   const majorname = router.query.Major;
 
