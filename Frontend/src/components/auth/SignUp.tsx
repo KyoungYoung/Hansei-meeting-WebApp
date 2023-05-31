@@ -119,7 +119,7 @@ interface SignupData {
 function SignUp() {
     const router= useRouter()
     const [domainOptions,setDomainOptions]=useState(domainList);
-    const { register, formState:{errors,isSubmitting},getValues, handleSubmit,setValue, setError,clearErrors,watch } = useForm<SignupData>({mode:'onBlur',criteriaMode:'firstError'});
+    const { register, formState:{errors,isSubmitting},getValues, handleSubmit,setValue, setError,clearErrors,watch } = useForm<SignupData>({mode:'onBlur'});
     const onSubmit: SubmitHandler<SignupData> =useCallback(async (e)=>{
     const data={
         email:e.email,
@@ -167,9 +167,9 @@ function SignUp() {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormContainer>
                     <FieldWapper>
-                        <EmailField>
-                        <StyledLabel>이메일</StyledLabel>
-                        <Field type="email" {...register("email", { required: "이메일은 필수입니다." })} onFocus={()=>clearErrors("email")}/>
+                    <StyledLabel>이메일</StyledLabel>
+                        <EmailField>  
+                        <Field type="text" {...register("email", { required: "이메일은 필수입니다." })} onFocus={()=>clearErrors("email")}/>
                         @
                         {watch('emailDomain') === '직접입력' && (
                             <Field
@@ -195,12 +195,12 @@ function SignUp() {
                         <StyledLabel>비밀번호</StyledLabel>
                         <Field type="password" {...register("password", { 
                             required: "비밀번호는 필수입니다.",
+                            minLength:{value:8,message:"8~32자리의 비밀번호를 입력해주세요."},
+                            maxLength:{value:32,message:"8~32자리의 비밀번호를 입력해주세요."},
                             pattern: {
-                                value:/^(?=.*\d)(?=.*[a-zA-Z])[!@#$%^&*_a-zA-Z0-9]$/, 
-                                message:"영문자, 숫자, 특수문자(!@#$%^&*_)만 입력가능합니다"
+                                value:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*_]*$/g, 
+                                message:"영문자와 숫자가 포함되어야합니다. 일부 특수문자만 입력가능합니다"
                                 },
-                            min:{value:8,message:"8~32자리의 비밀번호를 입력해주세요"},
-                            max:{value:32,message:"8~32자리의 비밀번호를 입력해주세요"}
                             })} 
                             onFocus={()=>clearErrors("password")}
                             />
