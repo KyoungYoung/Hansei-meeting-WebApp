@@ -1,9 +1,9 @@
-import SignupPage from '@/components/signup/SignupPage';
+import SignUp from '@/components/auth/SignUp';
 import React from 'react';
 
 function signup() {
     return (
-        <SignupPage/>
+        <SignUp/>
     );
 }
 

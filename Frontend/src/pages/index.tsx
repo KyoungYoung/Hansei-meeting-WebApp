@@ -1,18 +1,26 @@
-import Login from '@/components/Login'
-import Head from 'next/head'
-import Mainpage from '@/components/main/Mainpage'
+import MetaHead from '@/components/MetaHead'
+import Login from '@/components/auth/Login'
+import { hasCookie } from 'cookies-next'
+import Head from 'next/head';
+import { useRouter } from 'next/router'
+import { useEffect } from 'react';
 
 export default function Home() {
+  const router=useRouter();
+  useEffect(()=>{
+    hasCookie('sid')?router.replace('/mainpage'):router.replace('/login', '/')
+  },[])
+  
   return (
     <>
       <Head>
-        <title>Test Next App</title>
-        <meta name="description" content="test page" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="다과회" />
+        <meta property='og:title' content='다과회'/>
+        <title>다과회</title>
       </Head>
-      <main>
-         <Mainpage/>
-      </main>
+        <main>
+          
+        </main>
     </>
   )
 }
