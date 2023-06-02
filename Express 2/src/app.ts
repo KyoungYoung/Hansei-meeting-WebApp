@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import path from 'path';
+import { send } from 'process';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
@@ -55,47 +56,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// /login - 로그인 페이지
-app.get('/user/login', (req: Request, res: Response, next: NextFunction) => {
-    res.render('login.ejs');
-});
-// 로그인 실패하면 /fail로 리다이렉트
-app.post(
-    '/user/login',
-    passport.authenticate('local', {
-        failureRedirect: '/fail',
-        failureFlash: true,
-    }),
-    (req: Request | any, res: Response, next: NextFunction) => {
-        req.login(req.user, (err: Error) => {
-            if (err) {
-                return next(err);
-            }
-        });
-        console.log('성공');
-        res.send('성공했어요');
-    }
-);
-app.get(
-    '/user/fail',
-    (req: Request | any, res: Response, next: NextFunction) => {
-        const errorMessage = req.flash('error')[0];
-        res.send(`
-        <script>
-            alert("${errorMessage}");
-            window.location.href = "/login";
-        </script>
-    `);
-    }
-);
-
 // 아이디 비번 인증하는 세부 코드
 passport.use(
     new LocalStrategy(
         {
             // input에서 name 속성들
-            usernameField: 'id',
-            passwordField: 'pw',
+            id: 'id',
+            pass: 'pw',
             // 로그인 후 세션 저장할것인지
             session: true,
             // 아이디, 비번 말고 다른 정보 검증하고 싶은지
@@ -103,6 +70,7 @@ passport.use(
         },
         // 사용자 아이디, 비번 검증부분
         (inputID: any, inputPW: any, done: any) => {
+            console.log(inputID, inputPW);
             db.collection('login').findOne(
                 { id: inputID },
                 (err: Error, result: any) => {
@@ -140,6 +108,84 @@ passport.deserializeUser((id: any, done: any) => {
         done(null, result);
     });
 });
+
+// 로그인 실패하면 /fail로 리다이렉트
+
+// app.post('/user/login', (req, res) => {
+//     const { id, pw } = req.body; // 요청에서 아이디와 비밀번호 추출
+//     console.log(id, pw, '요청받음');
+//     // 아이디와 비밀번호 검증 로직
+//     if (id === 'kky' && pw === '1234') {
+//         // 인증 성공
+//         res.status(200).json({ message: '로그인 성공' });
+//     } else {
+//         // 인증 실패
+//         res.status(401).json({ message: '로그인 실패' });
+//     }
+// });
+app.post(
+    '/user/login',
+    passport.authenticate('local', {
+        failureRedirect: '/user/fail',
+        failureFlash: true,
+    }),
+    (req: Request | any, res: Response, next: NextFunction) => {
+        const { id, pw } = req.body; // 요청에서 아이디와 비밀번호 추출
+        console.log(id, pw, '요청받음');
+
+        if (!id || !pw) {
+            res.setHeader('Content-Type', 'application/json');
+            res.status(400).json({
+                data: '아이디와 비밀번호를 제대로 입력해주세요.',
+            });
+            return;
+        }
+        console.log('요청출력', id, pw);
+        req.login(req.user, (err: Error) => {
+            console.log('로그인처리후 req', req);
+            if (err) {
+                // res.setHeader('Content-Type', 'application/json');
+                // res.status(401).json({ data: '로그인실패' });
+                return next(err);
+            }
+        });
+        console.log('성공');
+        const user = req.user; // 사용자 정보를 가져옴
+        req.session.user = user;
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({ sessionId: req.session.user }));
+        res.json({ sessionId: req.session.user });
+    }
+);
+
+// /login - 로그인 페이지
+app.get(
+    '/user/login',
+    (req: Request | any, res: Response, next: NextFunction) => {
+        var user = req.session.user;
+        // 세션 데이터 활용
+        if (user) {
+            // 로그인된 사용자에 대한 프로필 페이지 보여주기
+            res.render('mypage.ejs', { user });
+        } else {
+            // 로그인되지 않은 사용자는 로그인 페이지로 리다이렉트
+            // res.redirect('/user/login');
+        }
+        res.render('login.ejs');
+    }
+);
+
+app.get(
+    '/user/fail',
+    (req: Request | any, res: Response, next: NextFunction) => {
+        const errorMessage = req.flash('error')[0];
+        res.json({ errorMessage });
+        // <script>
+        //     alert("${errorMessage}");
+        //     window.location.href = "/user/login";
+        // </script>
+    }
+);
 
 // /mypage - 마이 페이지
 app.get(
