@@ -48,10 +48,19 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
-
+const FileStore = require('session-file-store')(session);
+const cors = require('cors');
+ 
+const fileStoreOptions = {
+    ttl:7200,
+};
 // 회원 인증 미들웨어: 요청, 응답 사이에 실행되는 코드
+app.use(cors({
+    origin:['localhost:3000','13.209.218.58','13.209.218.58:3002'],
+    credentials: true,
+}));
 app.use(
-    session({ secret: '비밀코드', resave: true, saveUninitialized: false })
+    session({ store: new FileStore(fileStoreOptions), secret: '비밀코드', resave: true, saveUninitialized: false, name:'sid' })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -61,8 +70,8 @@ passport.use(
     new LocalStrategy(
         {
             // input에서 name 속성들
-            id: 'id',
-            pass: 'pw',
+            usernameField: 'id',
+            passwordField: 'pw',
             // 로그인 후 세션 저장할것인지
             session: true,
             // 아이디, 비번 말고 다른 정보 검증하고 싶은지
@@ -70,7 +79,6 @@ passport.use(
         },
         // 사용자 아이디, 비번 검증부분
         (inputID: any, inputPW: any, done: any) => {
-            console.log(inputID, inputPW);
             db.collection('login').findOne(
                 { id: inputID },
                 (err: Error, result: any) => {
@@ -125,44 +133,43 @@ passport.deserializeUser((id: any, done: any) => {
 // });
 app.post(
     '/user/login',
-    passport.authenticate('local', {
-        failureRedirect: '/user/fail',
-        failureFlash: true,
-    }),
+    passport.authenticate('local'),
     (req: Request | any, res: Response, next: NextFunction) => {
         const { id, pw } = req.body; // 요청에서 아이디와 비밀번호 추출
         console.log(id, pw, '요청받음');
 
-        if (!id || !pw) {
-            res.setHeader('Content-Type', 'application/json');
-            res.status(400).json({
-                data: '아이디와 비밀번호를 제대로 입력해주세요.',
-            });
-            return;
-        }
+        req.login(req.user, (err: Error) => {
+            if (err) {
+                return next(err);
+            }
+        });
         console.log('요청출력', id, pw);
         req.login(req.user, (err: Error) => {
-            console.log('로그인처리후 req', req);
             if (err) {
                 // res.setHeader('Content-Type', 'application/json');
                 // res.status(401).json({ data: '로그인실패' });
                 return next(err);
             }
-        });
-        console.log('성공');
-        const user = req.user; // 사용자 정보를 가져옴
-        req.session.user = user;
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({ sessionId: req.session.user }));
-        res.json({ sessionId: req.session.user });
+        })
+        try {
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.status(200).json({id:id,message:"정상로그인"});
+            console.log('로그인성공');
+        } catch (error) {
+            console.log("로그인 오류");
+        }
+        
     }
 );
 
 // /login - 로그인 페이지
 app.get(
     '/user/login',
+    loginUser,
     (req: Request | any, res: Response, next: NextFunction) => {
-        var user = req.session.user;
+       
+        if(req.headers.origin==='localhost:8000'){
+            var user = req.session.user;
         // 세션 데이터 활용
         if (user) {
             // 로그인된 사용자에 대한 프로필 페이지 보여주기
@@ -172,7 +179,27 @@ app.get(
             // res.redirect('/user/login');
         }
         res.render('login.ejs');
+        }
+        console.log("인증성공")
+        res.status(200).json({succeed:true, message:'로그인된 유저입니다'})
+        
     }
+);
+
+app.delete(
+    '/user/login',
+    loginUser,
+    (req: Request | any, res: Response, next: NextFunction) => {
+        req.session.destroy((err: any)=>{
+            if (err) {
+                // 세션 삭제 실패
+                console.log(err);
+              } 
+                // 세션 삭제 성공
+                console.log('세션 삭제 완료');
+                res.status(204).end()
+              })
+            }
 );
 
 app.get(
@@ -192,9 +219,12 @@ app.get(
     '/user/mypage',
     loginUser,
     (req: Request | any, res: Response, next: NextFunction) => {
-        console.log(req.user);
+        console.log("로그인된 유저")
+        res.header('Content-Type',"application/json")
+        res.status(200).json({succeed:true, user:{id:req.user.id}})
 
-        res.render('mypage.ejs', { userMe: req.user });
+        if(req.headers.origin=='localhost:8000'){
+            res.render('mypage.ejs', { userMe: req.user })};
     }
 );
 // 마이페이지 접속전 미들웨어
@@ -203,7 +233,7 @@ function loginUser(req: Request | any, res: Response, next: any) {
         // 요청 user 있으면 통과
         next();
     } else {
-        res.send('로그인 안함!');
+        res.status(401).json({succeed:false,message:'로그인 안함!'});
     }
 }
 
