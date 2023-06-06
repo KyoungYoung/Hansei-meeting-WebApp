@@ -31,8 +31,8 @@
         "yamljs": "^0.3.0"
     },
     "scripts": {
-        "start": "node dist/app.js",
-        "build": "tsc && node dist",
+        "start": "node ./build/app.js",
+        "build": "tsc && tsc-alias",
         "api-docs": "swagger-cli bundle ./src/swagger/openapi.yaml --outfile ./build/swagger.yaml --type yaml",
         "predev": "npm run api-docs",
         "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/app.ts"
@@ -42,6 +42,8 @@
         "@types/express-serve-static-core": "^4.17.35",
         "@types/node": "^20.1.4",
         "nodemon": "^2.0.22",
-        "ts-node": "^10.9.1"
+        "ts-node": "^10.9.1",
+        "tsc-alias": "^1.8.6",
+        "tsconfig-paths": "^4.2.0"
     }
 }
