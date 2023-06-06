@@ -3,13 +3,14 @@ import path from 'path';
 import 'tsconfig-paths/register';
 import userRouter from './routes/user';
 import postRouter from './routes/post'
+import swaggerFile from './swagger/swagger-output.json';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
 const app: Application = express();
 const swaggerSpec = YAML.load(path.join(__dirname, '../build/swagger.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 const methodOverride = require('method-override');
 const MongoClient = require('mongodb').MongoClient;
 const flash = require('connect-flash');
@@ -50,6 +51,8 @@ app.listen(process.env.PORT, () => {
 
 // 메인 페이지
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
+    // #swagger.summary = '기본 페이지'
+     // #swagger.description = '백엔드 테스트 페이지 로딩'
     res.render('index.ejs');
 });
 

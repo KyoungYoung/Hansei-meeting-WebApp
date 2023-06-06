@@ -1,0 +1,353 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Hansei-Meeting-WebApp API",
+    "description": "한세 커뮤니티 다과회 API 문서",
+    "license": "kky"
+  },
+  "host": [
+    "localhost:8000",
+    "15.164.51.24 "
+  ],
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "user",
+      "description": "유저관련 API"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {},
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "기본 페이지",
+        "description": "백엔드 테스트 페이지 로딩",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/user/fail": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          }
+        }
+      }
+    },
+    "/post/write": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "tags": [
+          "post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/user/login": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "401": {
+            "description": "권한 없음"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                },
+                "pw": {
+                  "example": "any"
+                },
+                "studentId": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "콘텐츠 없음"
+          },
+          "401": {
+            "description": "권한 없음"
+          }
+        }
+      }
+    },
+    "/user/mypage": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "401": {
+            "description": "권한 없음"
+          }
+        }
+      }
+    },
+    "/user/join": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                },
+                "pw": {
+                  "example": "any"
+                },
+                "studentId": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "잘못된 요청"
+          }
+        }
+      }
+    },
+    "/post/list": {
+      "get": {
+        "tags": [
+          "post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          }
+        }
+      }
+    },
+    "/post/search": {
+      "get": {
+        "tags": [
+          "post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "잘못된 요청"
+          },
+          "500": {
+            "description": "내부 서버 오류"
+          }
+        }
+      }
+    },
+    "/post/edit": {
+      "get": {
+        "tags": [
+          "post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "금지됨"
+          },
+          "500": {
+            "description": "내부 서버 오류"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "금지됨"
+          }
+        }
+      }
+    },
+    "/post/detail/{id}": {
+      "get": {
+        "tags": [
+          "post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          }
+        }
+      }
+    }
+  }
+}

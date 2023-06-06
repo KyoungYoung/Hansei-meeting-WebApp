@@ -1904,7 +1904,7 @@ supports-color@^7.1.0:
 
 swagger-autogen@^2.23.1:
   version "2.23.1"
-  resolved "https://registry.npmjs.org/swagger-autogen/-/swagger-autogen-2.23.1.tgz"
+  resolved "https://registry.yarnpkg.com/swagger-autogen/-/swagger-autogen-2.23.1.tgz#02efeeb6b59ee5ec9d0222a675160836414e1f89"
   integrity sha512-tOAb5cOGNPduIHKoOxndCRy2Mrg7xV3O1RerrWExrDxeSTjXhA350pyJd7VUDY6ZO9gbZ34Bjlc5CXkleUgvAQ==
   dependencies:
     acorn "^7.4.1"
