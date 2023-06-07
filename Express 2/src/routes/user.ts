@@ -5,7 +5,7 @@ import { db } from '@/app';
 const passport = require('passport');   
 
 const router = express.Router();
-router.use(passport.session());
+router.use(passport?.session());
 router.route('/login')
     .get(loginUser, userSessionCheck)
     .post(userLogin)

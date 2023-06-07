@@ -1,7 +1,7 @@
 
 import express from 'express';
 import { postDelete, postDetail, postEditRequest, postEditView, postList, postSearch, postWrite } from '@/controllers/postController';
-const passport = require('passport');   
+let passport: any = require('passport');   
 const router = express.Router();
 router.use(passport.session());
 router.route('/list')

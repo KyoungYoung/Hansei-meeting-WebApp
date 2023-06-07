@@ -96,7 +96,7 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const cors = require('cors');
 
-const passportConfig = require('./passport');
+const passportConfig = require('./passportconfig');
 
 // 회원 인증 미들웨어: 요청, 응답 사이에 실행되는 코드
 app.use(

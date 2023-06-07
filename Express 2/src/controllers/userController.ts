@@ -50,7 +50,7 @@ export const userSessionCheck= (req: Request | any, res: Response, next: NextFun
     
 }
 
-export const userLogin= (req: Request, res: Response, next: NextFunction) => {
+export const userLogin= (req: Request|any, res: Response, next: NextFunction) => {
     // #swagger.tags = ['user']
     passport.authenticate('local',(err: Error, user: any, info: any) => {
         console.log(req)
