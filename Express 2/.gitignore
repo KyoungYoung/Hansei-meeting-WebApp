@@ -1,2 +1,8 @@
 node_modules/
 sessions/
+build/
+
+.yarn
+/.pnp
+.pnp.js
+.yarnrc.yml
