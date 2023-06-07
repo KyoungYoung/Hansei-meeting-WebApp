@@ -5,6 +5,7 @@ const passport = require('passport')
 
 
 export const userLogout = (req: Request | any, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['user']
     req.session.destroy((err: any) => {
         if (err) {
             // 세션 삭제 실패
@@ -17,6 +18,7 @@ export const userLogout = (req: Request | any, res: Response, next: NextFunction
 }
 
 export const userInfo=(req: Request | any, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['user']
     
     if (req.headers.host == 'localhost:8000'&&req.headers.origin== 'localhost:8000') {
         res.render('mypage.ejs', { userMe: req.user });
@@ -29,6 +31,7 @@ export const userInfo=(req: Request | any, res: Response, next: NextFunction) =>
 }
 
 export const userSessionCheck= (req: Request | any, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['user']
     if (req.headers.origin === 'localhost:8000') {
         var user = req.session.user;
         // 세션 데이터 활용
@@ -48,6 +51,7 @@ export const userSessionCheck= (req: Request | any, res: Response, next: NextFun
 }
 
 export const userLogin= (req: Request, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['user']
     passport.authenticate('local',(err: Error, user: any, info: any) => {
         console.log(req)
         const { id, pw, studentId, department } = req.body; // 요청에서 아이디와 비밀번호 추출
@@ -115,6 +119,7 @@ export function loginUser(req: Request | any, res: Response, next: any) {
 }
 
 export const userSignUp=(req: Request, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['user']
     // login 컬렉션에 회원가입 정보 저장하기
     db.collection('login').insertOne(
         {

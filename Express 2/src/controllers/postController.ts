@@ -5,6 +5,7 @@ const passport = require('passport')
 
 
 export const postSearch = (req: Request, res: Response) => {
+    // #swagger.tags = ['post']
     // 검색어에 숫자가 있어도 일치시키기 위한 정규식
     const searchValue: any = req.query.value; // 타입을 명시적으로 지정
     console.log(typeof searchValue);
@@ -47,6 +48,7 @@ export const postSearch = (req: Request, res: Response) => {
 }
 
 export const postWrite = (req: Request | any, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['post']
     db.collection('count').findOne(
         { name: '게시물갯수' },
         (err: Error, result: any) => {
@@ -79,6 +81,7 @@ export const postWrite = (req: Request | any, res: Response, next: NextFunction)
 }
 
 export const postList = (req: Request, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['post']
     // 작성자 정보 가져오기
 
     db.collection('login')
@@ -115,6 +118,7 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const postDelete=(req: Request | any, res: Response) => {
+    // #swagger.tags = ['post']
     // db에서 삭제하기
     console.log(req.body);
 
@@ -158,6 +162,7 @@ export const postDelete=(req: Request | any, res: Response) => {
 }
 
 export const postEditView=(req: Request | any, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['post']
     const postId = parseInt(req.params.id);
     const loggedInUserId = req.user?.id;
 
@@ -185,6 +190,7 @@ export const postEditView=(req: Request | any, res: Response, next: NextFunction
 }
 
 export const postEditRequest=(req: Request | any, res: Response, next: NextFunction) => {
+    // #swagger.tags = ['post']
     const postId = parseInt(req.body.id);
     const loggedInUserId = req.user?.id;
 
@@ -225,6 +231,7 @@ export const postEditRequest=(req: Request | any, res: Response, next: NextFunct
 }
 
 export const postDetail=(req: Request, res: Response) => {
+    // #swagger.tags = ['post']
     
     db.collection('post').findOne(
         { _id: parseInt(req.params.id) },
