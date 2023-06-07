@@ -1,8 +1,9 @@
 
 import express from 'express';
-import { postDetail, postEditRequest, postEditView, postList, postSearch, postWrite } from '@/controllers/postController';
+import { postDelete, postDetail, postEditRequest, postEditView, postList, postSearch, postWrite } from '@/controllers/postController';
+const passport = require('passport');   
 const router = express.Router();
-
+router.use(passport.session());
 router.route('/list')
 .get(postList)
 router.route('/search')
@@ -18,5 +19,7 @@ router.route('/edit')
 router.route('/detail/:id')
 .get(postDetail)
 
+router.route('/delete')
+.delete(postDelete)
 
 export default router;

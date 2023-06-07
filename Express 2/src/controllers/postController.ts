@@ -1,5 +1,7 @@
+
 import { Request, Response, NextFunction } from 'express';
-import { db, passport } from '../app';
+import  { db } from '@/app';
+const passport = require('passport')
 
 
 export const postSearch = (req: Request, res: Response) => {
@@ -81,6 +83,7 @@ export const postWrite = (req: Request | any, res: Response, next: NextFunction)
 export const postList = (req: Request, res: Response, next: NextFunction) => {
     // #swagger.tags = ['post']
     // 작성자 정보 가져오기
+
     db.collection('login')
         .find()
         .toArray((err: Error, loginResult: any) => {
@@ -99,20 +102,22 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
                     }
 
                     // 게시물 작성자 정보를 포함하여 렌더링
-                    if(req.headers.origin=='localhost:8000'){
+                    if(req.headers.host=='localhost:8000'){
                         res.render('list.ejs', {
                             loginData: loginResult,
                             posts: postResult,
                             getAuthorName: getAuthorName,
                         });
+                    }else{
                         const data ={data: postResult};
-                        res.status(200).json(data)
-                }
+                    res.status(200).json(data)
+                    }
+                    
                 });
         });
 }
 
-export const portDelete=(req: Request | any, res: Response) => {
+export const postDelete=(req: Request | any, res: Response) => {
     // #swagger.tags = ['post']
     // db에서 삭제하기
     console.log(req.body);
@@ -173,7 +178,7 @@ export const postEditView=(req: Request | any, res: Response, next: NextFunction
             // 작성자와 로그인한 사용자가 같은 경우에만 수정 페이지를 렌더링
 
             if (result && result.작성자 === loggedInUserId) {
-                if(req.headers.origin=='localhost:8000')res.render('edit.ejs', { post: result });
+                if(req.headers.host=='localhost:8000')res.render('edit.ejs', { post: result });
             } else {
                 // 작성자와 로그인한 사용자가 다른 경우, 또는 글이 없는 경우 에러 메시지를 전송
                 res.status(403).json({
@@ -231,7 +236,7 @@ export const postDetail=(req: Request, res: Response) => {
     db.collection('post').findOne(
         { _id: parseInt(req.params.id) },
         (err: Error, result: any) => {
-            if(req.headers.origin=='localhost:8000'){
+            if(req.headers.host=='localhost:8000'){
                 res.render('detail.ejs', { data: result });
             }
             res.status(200).json({data:result})

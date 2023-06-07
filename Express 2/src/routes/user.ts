@@ -1,7 +1,11 @@
-import express from 'express';
+import express,{ Request, Response, NextFunction }  from 'express';
 import {userInfo, userLogout, userLogin, userSessionCheck, userSignUp, loginUser} from '@/controllers/userController';
-const router = express.Router();
+import { db } from '@/app';
 
+const passport = require('passport');   
+
+const router = express.Router();
+router.use(passport.session());
 router.route('/login')
     .get(loginUser, userSessionCheck)
     .post(userLogin)
