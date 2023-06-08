@@ -37,7 +37,8 @@
         "api-docs": "swagger-cli bundle ./src/swagger/openapi.yaml --outfile ./build/swagger.yaml --type yaml",
         "predev": "npm run api-docs",
         "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/app.ts",
-        "start-gendoc": "node src/swagger/swagger.js"
+        "start-gendoc": "node src/swagger/swagger.js",
+        "start-eco": "npm run build && pm2 restart ecosystem.config.js"
     },
     "devDependencies": {
         "@types/express": "^4.17.17",

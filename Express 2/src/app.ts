@@ -2,7 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import path from 'path';
 import 'tsconfig-paths/register';
 import userRouter from './routes/user';
-import postRouter from './routes/post'
+import postRouter from './routes/post';
 import swaggerFile from './swagger/swagger-output.json';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -10,7 +10,7 @@ import YAML from 'yamljs';
 const app: Application = express();
 const swaggerSpec = YAML.load(path.join(__dirname, '../build/swagger.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 const methodOverride = require('method-override');
 const MongoClient = require('mongodb').MongoClient;
 const flash = require('connect-flash');
@@ -24,43 +24,21 @@ app.use(methodOverride('_method'));
 app.use(flash());
 app.set('view engine', 'ejs');
 
-// const { MongoClient } = require("mongodb");
-
-
-// const client = new MongoClient( process.env.DB_URL, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   });
-// async function dbconnect(){
-//     let ddb:any;
-// client.connect(async (err: Error, client: any) => {
-//             // 에러날 시
-//             if (err) return console.log(err);
-//             console.log('연결됨',client)
-//             ddb=await client.db('hansei')
-            
-//         }) 
-            
-// }
-
-export let db:any;
+export let db: any;
 MongoClient.connect(
     process.env.DB_URL,
     { useUnifiedTopology: true },
     (err: Error, client: any) => {
         // 에러날 시
         if (err) return console.log(err);
-        
 
         // hansei db에 연결하기
-            db = client.db('hansei');
-            app.listen(process.env.PORT, () => {
-                console.log(`🛡️  Server listening on port: 8000🛡️`);
-            });
-
-        
+        db = client.db('hansei');
+        app.listen(process.env.PORT, () => {
+            console.log(`🛡️  Server listening on port: 8000🛡️`);
+        });
     }
-)
+);
 
 // export let db: any = ddb
 const exsession = require('express-session');
@@ -69,7 +47,8 @@ const fileStoreOptions = {
     ttl: 7200,
 };
 
-app.use(exsession({
+app.use(
+    exsession({
         store: new FileStore(fileStoreOptions),
         secret: '비밀코드',
         resave: true,
@@ -77,15 +56,14 @@ app.use(exsession({
         name: 'sid',
     })
 );
-app.use('/user', userRouter)
-app.use('/post', postRouter)
+app.use('/user', userRouter);
+app.use('/post', postRouter);
 // 서버 실행
-
 
 // 메인 페이지
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
     // #swagger.summary = '기본 페이지'
-     // #swagger.description = '백엔드 테스트 페이지 로딩'
+    // #swagger.description = '백엔드 테스트 페이지 로딩'
     res.render('index.ejs');
 });
 
@@ -107,10 +85,8 @@ app.use(
 );
 passportConfig();
 
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // // 아이디 비번 인증하는 세부 코드
 // passport.use(
@@ -155,7 +131,7 @@ app.use(passport.session());
 // 세션 만들기
 // id 이용해 세션 저장 코드 - 로그인 성공시 발동, 아이디, 비번 검증 성공시 result값이 성공할 시 user로 보냄
 // passport.serializeUser((user: any, done: any) => {
-    
+
 //     // 세션 데이터를 만들고 id정보를 쿠키로 보냄
 //     done(null, user.id);
 // });
@@ -180,17 +156,17 @@ app.use(passport.session());
 //     }
 // });
 
-export function loginUser(req: Request | any, res: Response, next: any) {
-    console.log('접근')
-    if (req.user) {
-        console.log('통과')
-        // 요청 user 있으면 통과
-        next();
-    } else {
-        console.log('실패')
-        res.status(401).json({ succeed: false, message: '로그인 안함!' });
-    }
-}
+// export function loginUser(req: Request | any, res: Response, next: any) {
+//     console.log('접근')
+//     if (req.user) {
+//         console.log('통과')
+//         // 요청 user 있으면 통과
+//         next();
+//     } else {
+//         console.log('실패')
+//         res.status(401).json({ succeed: false, message: '로그인 안함!' });
+//     }
+// }
 
 // app.post(
 //     '/user/login',
@@ -219,7 +195,7 @@ export function loginUser(req: Request | any, res: Response, next: any) {
 //         } catch (error) {
 //             console.log("로그인 오류");
 //         }
-        
+
 //     }
 // );
 
@@ -235,28 +211,22 @@ app.get(
     }
 );
 
-
 // /search - 검색 페이지
-
 
 // /write 글 작성 페이지
 app.get('/post/write', (req: Request, res: Response, next: NextFunction) => {
-    if(req.headers.origin=='localhost:8000')res.render('write.ejs');
+    if (req.headers.origin == 'localhost:8000') res.render('write.ejs');
 });
 
 // /write - form 데이터 /write-page로 POST 요청
-
 
 // /list GET 요청 처리
 
 // getAuthorName 함수 정의
 
-
 // /delete
 
-
 // /edit - 수정페이지
-
 
 // /detail - 상세 글 페이지
 
