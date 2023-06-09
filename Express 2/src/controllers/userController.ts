@@ -2,6 +2,7 @@
 import { db} from '@/app';
 import { Request, Response, NextFunction } from 'express';
 const passport = require('passport')
+const axios = require('axios');
 
 
 export const userLogout = (req: Request | any, res: Response, next: NextFunction) => {
@@ -137,6 +138,21 @@ export const userSignUp=(req: Request, res: Response, next: NextFunction) => {
                 res.status(400).json({succeed:false, error:"회원가입 실패"})
             }   
             console.log(result.id,'회원님 저장완료!!!');
+            const formData = new URLSearchParams();
+             formData.append('id', result.id);
+             formData.append('pw',  result.pw);
+             axios.post('http://localhost:8000/user/login', formData.toString(), {
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                }).then((response: { status: number; data: any; }) => {
+                    // 응답을 처리합니다.
+                    res.status(response.status).json(response.data);
+                  })
+                  .catch((err: any) => {
+                    // 에러 처리
+                    res.status(500).json({ error: '중간로그인에러발생' });
+                  });
         }
     );
     if (req.headers.host=== 'localhost:8000'&&req.headers.origin === 'localhost:8000') {
