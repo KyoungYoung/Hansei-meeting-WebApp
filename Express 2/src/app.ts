@@ -215,7 +215,7 @@ app.get(
 
 // /write 글 작성 페이지
 app.get('/post/write', (req: Request, res: Response, next: NextFunction) => {
-    if (req.headers.origin == 'localhost:8000') res.render('write.ejs');
+    res.render('write.ejs');
 });
 
 // /write - form 데이터 /write-page로 POST 요청

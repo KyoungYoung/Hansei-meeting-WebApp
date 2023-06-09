@@ -127,16 +127,19 @@ export const userSignUp=(req: Request, res: Response, next: NextFunction) => {
             pw: req.body.pw,
             studentId: req.body.studentId,
             department: req.body.department,
+            firstName: req.body.firstName,
+            lastName:req.body.lastName,
+            creatAt:req.body.creatAt,
         },
         (err: Error, result: any) => {
             if(err)
             {
                 res.status(400).json({succeed:false, error:"회원가입 실패"})
-            }
-            console.log('저장완료!!!');
+            }   
+            console.log(result.id,'회원님 저장완료!!!');
         }
     );
-    if (req.headers.host === 'localhost:8000') {
+    if (req.headers.host=== 'localhost:8000'&&req.headers.origin === 'localhost:8000') {
         res.redirect('/login');
     }else{
      res.status(200).json({succeed:true,user:{id:req.body.id}, message:`${req.body.id} 회원가입 성공`})
