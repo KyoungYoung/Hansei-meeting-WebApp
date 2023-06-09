@@ -49,6 +49,7 @@ export const postSearch = (req: Request, res: Response) => {
 
 export const postWrite = (req: Request | any, res: Response, next: NextFunction) => {
     // #swagger.tags = ['post']
+    console.log(req.headers.origin)
     console.log('글쓰기')
     db.collection('count').findOne(
         { name: '게시물갯수' },
