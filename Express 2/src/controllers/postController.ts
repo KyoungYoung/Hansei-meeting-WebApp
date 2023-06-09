@@ -49,6 +49,7 @@ export const postSearch = (req: Request, res: Response) => {
 
 export const postWrite = (req: Request | any, res: Response, next: NextFunction) => {
     // #swagger.tags = ['post']
+    console.log('글쓰기')
     db.collection('count').findOne(
         { name: '게시물갯수' },
         (err: Error, result: any) => {
@@ -60,7 +61,7 @@ export const postWrite = (req: Request | any, res: Response, next: NextFunction)
                 제목: req.body.title,
                 날짜: req.body.date,
                 내용: req.body.content,
-            };
+            };  
             db.collection('post').insertOne(
                 storage,
                 (err: any, result: any) => {
@@ -71,9 +72,17 @@ export const postWrite = (req: Request | any, res: Response, next: NextFunction)
                             if (err) {
                                 return console.log(err);
                             }
-                            res.redirect('/list');
+                            console.log(result,"글쓰기")
+                            if (req.headers.host=== 'localhost:8000'&&req.headers.origin === 'localhost:8000') {
+                                console.log("내부로 넘어감")
+                                res.redirect('/list');
+                            }else{
+                                console.log("성공")
+                                res.status(200).json({succeed:true, postId:total + 1})
+                            }
                         }
                     );
+                    
                 }
             );
         }
@@ -84,6 +93,9 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
     // #swagger.tags = ['post']
     // 작성자 정보 가져오기
 
+    const pageNumber = parseInt(req.query.page as string) || 1; // 클라이언트에서 전달된 페이지 번호
+    const itemsPerPage = 10; // 페이지당 게시글 수
+
     db.collection('login')
         .find()
         .toArray((err: Error, loginResult: any) => {
@@ -92,31 +104,43 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
                 return next(err);
             }
 
-            // 게시물 가져오기
-            db.collection('post')
-                .find()
-                .toArray((err: Error, postResult: any) => {
-                    if (err) {
-                        // 오류 처리
-                        return next(err);
-                    }
+            // 전체 게시글 수 계산
+            db.collection('post').countDocuments({}, (err: Error, totalCount: number) => {
+                if (err) {
+                    // 오류 처리
+                    return next(err);
+                }
 
-                    // 게시물 작성자 정보를 포함하여 렌더링
-                    if(req.headers.host=='localhost:8000'){
-                        res.render('list.ejs', {
-                            loginData: loginResult,
-                            posts: postResult,
-                            getAuthorName: getAuthorName,
-                        });
-                    }else{
-                        const data ={data: postResult};
-                    res.status(200).json(data)
-                    }
-                    
-                });
+                // 페이징 계산
+                const totalPages = Math.ceil(totalCount / itemsPerPage);
+                const skipCount = (pageNumber - 1) * itemsPerPage;
+
+                // 게시물 가져오기
+                db.collection('post')
+                    .find()
+                    .skip(skipCount)
+                    .limit(itemsPerPage)
+                    .toArray((err: Error, postResult: any) => {
+                        if (err) {
+                            // 오류 처리
+                            return next(err);
+                        }
+
+                        // 게시물 작성자 정보를 포함하여 렌더링
+                        if(req.headers.host=='localhost:8000'){
+                            res.render('list.ejs', {
+                                loginData: loginResult,
+                                posts: postResult,
+                                getAuthorName: getAuthorName,
+                            });
+                        }else{
+                            const data ={data: postResult};
+                            res.status(200).json(data)
+                        }
+                    });
+            });
         });
 }
-
 export const postDelete=(req: Request | any, res: Response) => {
     // #swagger.tags = ['post']
     // db에서 삭제하기
@@ -232,16 +256,26 @@ export const postEditRequest=(req: Request | any, res: Response, next: NextFunct
 
 export const postDetail=(req: Request, res: Response) => {
     // #swagger.tags = ['post']
-    
-    db.collection('post').findOne(
-        { _id: parseInt(req.params.id) },
-        (err: Error, result: any) => {
-            if(req.headers.host=='localhost:8000'){
-                res.render('detail.ejs', { data: result });
+    console.log('게시글보기')
+    try {
+        db.collection('post').findOne(
+            { _id: parseInt(req.params.id) },
+            (err: Error, result: any) => {
+                if(req.headers.host=='localhost:8000'&&req.headers.origin=='localhost:8000'){
+                   return res.render('detail.ejs', { data: result });
+                }else{
+                    if(result==null){
+                        return res.status(404).end()
+                    }
+                    res.status(200).json({succeed:true,data:result})
+                }
+                
             }
-            res.status(200).json({data:result})
+        );
+        } catch (error) {
+            console.log(error,"게시글 보기오류")
+            res.status(500).end()
         }
-    );
 }
 
 function getAuthorName(authorId: any, loginData: any) {

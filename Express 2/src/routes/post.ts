@@ -8,18 +8,25 @@ import {
     postSearch,
     postWrite,
 } from '@/controllers/postController';
+import { loginUser } from '@/controllers/userController';
 let passport: any = require('passport');
 const router = express.Router();
 router.use(passport.session());
-router.route('/list').get(postList);
+
 router.route('/search').get(postSearch);
 
-router.route('/write').post(postWrite);
+router.route('/')
+.get(postList)
+.post(loginUser, postWrite)
+.delete(postDelete)
 
-router.route('/edit').get(postEditView).put(postEditRequest);
+router.route('/:id')
+.get(postDetail)
+.put(loginUser, postEditRequest)
 
-router.route('/detail/:id').get(postDetail);
+router.route('/edit').get(postEditView);
 
-router.route('/delete').delete(postDelete);
+
+
 
 export default router;
