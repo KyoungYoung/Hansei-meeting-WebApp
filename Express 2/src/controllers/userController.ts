@@ -1,8 +1,9 @@
 
 import { db} from '@/app';
+import axios from 'axios';
 import { Request, Response, NextFunction } from 'express';
+import { test } from 'node:test';
 const passport = require('passport')
-const axios = require('axios');
 
 
 export const userLogout = (req: Request | any, res: Response, next: NextFunction) => {
@@ -137,28 +138,32 @@ export const userSignUp=(req: Request, res: Response, next: NextFunction) => {
             {
                 res.status(400).json({succeed:false, error:"회원가입 실패"})
             }   
-            console.log(result.id,'회원님 저장완료!!!');
+            const [testuser] = result.ops
             const formData = new URLSearchParams();
-             formData.append('id', result.id);
-             formData.append('pw',  result.pw);
+             formData.append('id', testuser.id);
+             formData.append('pw',  testuser.pw);
              axios.post('http://localhost:8000/user/login', formData.toString(), {
                 headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                    method:"POST",
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                }).then((response: { status: number; data: any; }) => {
+                }).then((response: any) => {
                     // 응답을 처리합니다.
-                    res.status(response.status).json(response.data);
+                    const [sidcookie] =response.headers['set-cookie']
+                    res.setHeader('set-cookie',sidcookie)
+                    res.status(200).json({succeed:true,user:{id:req.body.id}, message:`${req.body.id} 회원가입 성공`})
+
                   })
                   .catch((err: any) => {
                     // 에러 처리
-                    res.status(500).json({ error: '중간로그인에러발생' });
+                    console.log({ error: '중간로그인에러발생' });
                   });
         }
     );
     if (req.headers.host=== 'localhost:8000'&&req.headers.origin === 'localhost:8000') {
         res.redirect('/login');
     }else{
-     res.status(200).json({succeed:true,user:{id:req.body.id}, message:`${req.body.id} 회원가입 성공`})
+     
 
     }
 };
