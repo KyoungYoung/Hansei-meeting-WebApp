@@ -218,25 +218,27 @@ export const postEditView=(req: Request | any, res: Response, next: NextFunction
 
 export const postEditRequest=(req: Request | any, res: Response, next: NextFunction) => {
     // #swagger.tags = ['post']
-    const postId = parseInt(req.body.id);
+    const postId = parseInt(req.params.id);
     const loggedInUserId = req.user?.id;
-
+    console.log("게시글 수정",postId,loggedInUserId)
     db.collection('post').findOne(
         { _id: postId,작성자: loggedInUserId, 작성자_id:req.user._id },
         (err: Error, result: any) => {
             if (err) {
+                res.status(403).json({
+                    message: '수정할 수 있는 권한이 없습니다.',
+                });
                 return next(err);
             }
 
             // 작성자와 로그인한 사용자가 같은 경우에만 글을 수정합니다.
-            if (result._id && result.작성자 === loggedInUserId) {
                 db.collection('post').updateOne(
                     { _id: postId },
                     {
                         $set: {
                             제목: req.body.title,
-                            날짜: req.body.date,
                             내용: req.body.content,
+                            updatedAt:req.body.edited_date
                         },
                     },
                     (err: Error, result: any) => {
@@ -245,19 +247,17 @@ export const postEditRequest=(req: Request | any, res: Response, next: NextFunct
                         }
                         console.log('수정!');
                         if(req.headers.host=='localhost:8000'&&req.headers.origin=='localhost:8000'){
-                        // /list로 이동
-                        res.redirect('/list');
+                            // /list로 이동
+                            res.redirect('/list');
                         }
+                        console.log("게시글 수정")
+                        res.status(200).json({message:`${postId} 게시글이 수정되었습니다.`})
                     }
                 );
-            } else {
-                res.status(403).json({
-                    message: '수정할 수 있는 권한이 없습니다.',
-                });
-            }
         }
     );
 }
+
 
 export const postDetail=(req: Request, res: Response) => {
     // #swagger.tags = ['post']
