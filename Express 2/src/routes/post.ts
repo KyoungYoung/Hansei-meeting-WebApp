@@ -15,15 +15,19 @@ router.use(passport.session());
 
 router.route('/search').get(postSearch);
 
-router.route('/')
+router.route('')
 .get(postList)
 .post(loginUser, postWrite)
-.delete(postDelete)
+.put((req,res)=>{res.status(405).end()})
+.delete((req,res)=>{res.status(405).end()})
 
 router.route('/:id')
 .get(postDetail)
+.post((req,res)=>{res.status(405).end()})
 .put(loginUser, postEditRequest)
+.delete(loginUser,postDelete)
 
+//백엔드만 유효
 router.route('/edit').get(postEditView);
 
 

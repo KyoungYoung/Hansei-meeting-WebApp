@@ -49,8 +49,6 @@ export const postSearch = (req: Request, res: Response) => {
 
 export const postWrite = (req: Request | any, res: Response, next: NextFunction) => {
     // #swagger.tags = ['post']
-    console.log(req.headers.origin)
-    console.log('글쓰기')
     db.collection('count').findOne(
         { name: '게시물갯수' },
         (err: Error, result: any) => {
@@ -58,6 +56,7 @@ export const postWrite = (req: Request | any, res: Response, next: NextFunction)
             let storage = {
                 _id: total + 1,
                 // 현재 로그인한 사람 정보
+                작성자_id:req.user._id,
                 작성자: req.user.id,
                 제목: req.body.title,
                 날짜: req.body.date,
@@ -75,13 +74,12 @@ export const postWrite = (req: Request | any, res: Response, next: NextFunction)
                             }
                             console.log(result,"글쓰기")
                             if (req.headers.host=== 'localhost:8000'&&req.headers.origin === 'localhost:8000') {
-                                console.log("내부로 넘어감")
                                 res.redirect('/list');
                             }else{
                                 console.log("성공")
                                 res.status(200).json({succeed:true, postId:total + 1})
                             }
-                        }
+                        }   
                     );
                     
                 }
@@ -95,8 +93,13 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
     // 작성자 정보 가져오기
 
     const pageNumber = parseInt(req.query.page as string) || 1; // 클라이언트에서 전달된 페이지 번호
-    const itemsPerPage = 10; // 페이지당 게시글 수
+    const listNumArray=[10,20,30,50]
+    
+    const listPer =parseInt(req.query.listcount as string) || 20;
 
+    const itemsPerPage:number =(listNumArray.includes(listPer))? listPer: 20; // 페이지당 게시글 수
+
+    console.log(itemsPerPage)
     db.collection('login')
         .find()
         .toArray((err: Error, loginResult: any) => {
@@ -126,15 +129,15 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
                             // 오류 처리
                             return next(err);
                         }
-
                         // 게시물 작성자 정보를 포함하여 렌더링
-                        if(req.headers.host=='localhost:8000'){
+                        if(req.headers.host=='localhost:8000'&&req.headers.origin=='localhost:8000'){
                             res.render('list.ejs', {
                                 loginData: loginResult,
                                 posts: postResult,
                                 getAuthorName: getAuthorName,
                             });
                         }else{
+                            console.log("게시글리스트 조회됨")
                             const data ={data: postResult};
                             res.status(200).json(data)
                         }
@@ -145,28 +148,27 @@ export const postList = (req: Request, res: Response, next: NextFunction) => {
 export const postDelete=(req: Request | any, res: Response) => {
     // #swagger.tags = ['post']
     // db에서 삭제하기
-    console.log(req.body);
-
+    console.log("게시글 삭제",req.params.id)
     // 로그인 사용자 ID 확인
     const loggedInUserId = req.user.id;
     // 클라이언트에서 전달된 _id 값
-    const postId = parseInt(req.body._id);
+    const postId = parseInt(req.params.id);
     // 실제 로그인 유저 ID와 글에 저장된 작성자 ID 일치 여부 확인
-    const deleteData = { _id: postId, 작성자: loggedInUserId };
-
+    const deleteData = { _id: postId, 작성자: loggedInUserId, 작성자_id:req.user._id };
+    console.log(deleteData)
     console.log('작성자 ID:', loggedInUserId);
     console.log('_id 값:', postId);
 
     db.collection('post').findOne(deleteData, (err: Error, post: any) => {
         if (err) {
             console.log(err);
-            res.status(500).send({ message: '오류가 발생했습니다.' });
+            res.status(500).json({ message: '오류가 발생했습니다.' });
             return;
         }
 
         if (!post) {
             // 작성자와 일치하는 글이 없는 경우
-            res.status(403).send({ message: '내가 쓴 글이 아닙니다.' });
+            res.status(403).json({ message: '내가 쓴 글이 아닙니다.' });
             return;
         }
 
@@ -179,8 +181,8 @@ export const postDelete=(req: Request | any, res: Response) => {
                     res.status(500).send({ message: '오류가 발생했습니다.' });
                     return;
                 }
-
-                res.status(200).send({ message: '성공했습니다.' });
+                console.log("게시글 삭제성공")
+                res.status(200).json({ message: '성공했습니다.' });
             }
         );
     });
@@ -203,10 +205,10 @@ export const postEditView=(req: Request | any, res: Response, next: NextFunction
             // 작성자와 로그인한 사용자가 같은 경우에만 수정 페이지를 렌더링
 
             if (result && result.작성자 === loggedInUserId) {
-                if(req.headers.host=='localhost:8000')res.render('edit.ejs', { post: result });
+                if(req.headers.host=='localhost:8000'&&req.headers.origin=='localhost:8000')res.render('edit.ejs', { post: result });
             } else {
                 // 작성자와 로그인한 사용자가 다른 경우, 또는 글이 없는 경우 에러 메시지를 전송
-                res.status(403).json({
+                res.status(401).json({
                     message: '수정할 수 있는 권한이 없습니다.',
                 });
             }
@@ -220,14 +222,14 @@ export const postEditRequest=(req: Request | any, res: Response, next: NextFunct
     const loggedInUserId = req.user?.id;
 
     db.collection('post').findOne(
-        { _id: postId },
+        { _id: postId,작성자: loggedInUserId, 작성자_id:req.user._id },
         (err: Error, result: any) => {
             if (err) {
                 return next(err);
             }
 
             // 작성자와 로그인한 사용자가 같은 경우에만 글을 수정합니다.
-            if (result && result.작성자 === loggedInUserId) {
+            if (result._id && result.작성자 === loggedInUserId) {
                 db.collection('post').updateOne(
                     { _id: postId },
                     {
@@ -242,8 +244,10 @@ export const postEditRequest=(req: Request | any, res: Response, next: NextFunct
                             return next(err);
                         }
                         console.log('수정!');
+                        if(req.headers.host=='localhost:8000'&&req.headers.origin=='localhost:8000'){
                         // /list로 이동
                         res.redirect('/list');
+                        }
                     }
                 );
             } else {

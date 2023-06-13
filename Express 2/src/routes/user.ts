@@ -1,5 +1,5 @@
 import express,{ Request, Response, NextFunction }  from 'express';
-import {userInfo, userLogout, userLogin, userSessionCheck, userSignUp, loginUser} from '@/controllers/userController';
+import {userInfo, userLogout, userLogin, userSessionCheck, userSignUp, loginUser, userDelete, userFind} from '@/controllers/userController';
 import { db } from '@/app';
 
 const passport = require('passport');   
@@ -15,7 +15,9 @@ router.route('/mypage')
     .get(loginUser, userInfo)
 
 router.route('/join')
+    .get(userFind)
     .post(userSignUp)
+    .delete(userDelete)
 
 
 
